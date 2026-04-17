@@ -72,6 +72,18 @@ This fork now includes an in-repo Codex port surface:
 
 The original `.claude/**` assets remain in place as the source baseline. Codex-facing prompts and skills resolve to `.codex/**`.
 
+### Codex Automation Helpers
+
+This fork also includes two Codex-native helper tools for operating the 72-skill studio more systematically:
+
+- `python3 tools/codex_port/skill_harness.py audit` — inventory and validate the skill surface
+- `python3 tools/codex_port/skill_harness.py static all` — structural checks across all 72 skills
+- `python3 tools/codex_port/skill_harness.py category all` — rubric checks across all 72 skills
+- `python3 tools/codex_port/studio_orchestrator.py plan --idea "stylized co-op extraction roguelite" --engine unity --goal vertical-slice` — generate an idea-to-execution runbook
+- `python3 tools/codex_port/studio_orchestrator.py next` — recommend the next commands from the current repo state
+
+See [docs/CODEX-STUDIO-AUTOMATION.md](docs/CODEX-STUDIO-AUTOMATION.md) for the full operating model.
+
 ## Studio Hierarchy
 
 Agents are organized into three tiers, matching how real studios operate:
