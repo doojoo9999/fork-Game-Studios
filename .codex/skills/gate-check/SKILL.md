@@ -112,7 +112,7 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 - [ ] Master architecture document exists at `docs/architecture/architecture.md`
 - [ ] Architecture traceability index exists at `docs/architecture/architecture-traceability.md`
 - [ ] `/architecture-review` has been run (a review report file exists in `docs/architecture/`)
-- [ ] `design/accessibility-requirements.md` exists with accessibility tier committed
+- [ ] `design/ux/accessibility-requirements.md` exists with accessibility tier committed
 - [ ] `design/ux/interaction-patterns.md` exists (pattern library initialized, even if minimal)
 
 **Quality Checks:**
@@ -169,7 +169,7 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 - [ ] **Core loop fun is validated** — playtest data confirms the central mechanic is enjoyable, not just functional. Explicitly check the Vertical Slice playtest report.
 - [ ] UX specs cover all UI Requirements sections from MVP-tier GDDs
 - [ ] Interaction pattern library documents patterns used in key screens
-- [ ] Accessibility tier from `design/accessibility-requirements.md` is addressed in all key screen UX specs
+- [ ] Accessibility tier from `design/ux/accessibility-requirements.md` is addressed in all key screen UX specs
 - [ ] Sprint plan references real story file paths from `production/epics/`
       (not just GDDs — stories must embed GDD req ID + ADR reference)
 - [ ] **Vertical Slice is COMPLETE**, not just scoped — the build demonstrates the full core loop end-to-end. At least one complete [start → challenge → resolution] cycle works.
@@ -217,7 +217,7 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 - [ ] Difficulty curve matches the Difficulty Curve design doc (if one exists at `design/difficulty-curve.md`)
 - [ ] All implemented screens have corresponding UX specs (no "designed in-code" screens)
 - [ ] Interaction pattern library is up-to-date with all patterns used in implementation
-- [ ] Accessibility compliance verified against committed tier in `design/accessibility-requirements.md`
+- [ ] Accessibility compliance verified against committed tier in `design/ux/accessibility-requirements.md`
 
 ---
 
@@ -469,12 +469,12 @@ Based on the verdict, suggest specific next steps:
 - **No UX specs?** → `/ux-design [screen name]` to author specs, or `/team-ui [feature]` for full pipeline
 - **UX specs not reviewed?** → `/ux-review [file]` or `/ux-review all` to validate
 - **No accessibility requirements doc?** → Use a direct user prompt to offer to create it now:
-  - Prompt: "The gate requires `design/accessibility-requirements.md`. Shall I create it from the template?"
+  - Prompt: "The gate requires `design/ux/accessibility-requirements.md`. Shall I create it from the template?"
   - Options: `Create it now — I'll choose an accessibility tier`, `I'll create it myself`, `Skip for now`
   - If "Create it now": use a second a direct user prompt to ask for the tier:
     - Prompt: "Which accessibility tier fits this project?"
     - Options: `Basic — remapping + subtitles only (lowest effort)`, `Standard — Basic + colorblind modes + scalable UI`, `Comprehensive — Standard + motor accessibility + full settings menu`, `Exemplary — Comprehensive + external audit + full customization`
-  - Then write `design/accessibility-requirements.md` using the template at `.codex/docs/templates/accessibility-requirements.md`, filling in the chosen tier. Confirm: "May I write `design/accessibility-requirements.md`?"
+  - Then write `design/ux/accessibility-requirements.md` using the template at `.codex/docs/templates/accessibility-requirements.md`, filling in the chosen tier. Confirm: "May I write `design/ux/accessibility-requirements.md`?"
 - **No interaction pattern library?** → `/ux-design patterns` to initialize it
 - **GDDs not cross-reviewed?** → `/review-all-gdds` (run after all MVP GDDs are individually approved)
 - **Cross-GDD consistency issues?** → fix flagged GDDs, then re-run `/review-all-gdds`

@@ -1,6 +1,6 @@
         # Source Manifest
 
-        - Source repository commit: `3807bcdfc8b78b02837f6f175cf9b138b39def73`
+        - Source repository commit: `267b93c1c1907bb6eb28372b3720dae389322712`
         - Source repository remote: `https://github.com/doojoo9999/fork-Game-Studios.git`
         - Source of truth for parity work: existing `.claude/**` files plus `CLAUDE.md`
 

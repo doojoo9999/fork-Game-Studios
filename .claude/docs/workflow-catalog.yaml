@@ -145,7 +145,7 @@ phases:
         name: "Accessibility Requirements"
         required: true
         artifact:
-          glob: "design/accessibility-requirements.md"
+          glob: "design/ux/accessibility-requirements.md"
         description: "Commit accessibility tier (Basic/Standard/Comprehensive/Exemplary) and feature matrix. UX specs (Phase 4) reference this tier."
 
   pre-production:

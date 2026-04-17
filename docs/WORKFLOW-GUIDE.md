@@ -524,7 +524,7 @@ staleness can be detected.
 
 ### Step 3.5: Accessibility Requirements
 
-Create `design/accessibility-requirements.md` using the template. Commit to a
+Create `design/ux/accessibility-requirements.md` using the template. Commit to a
 tier (Basic / Standard / Comprehensive / Exemplary) and fill the 4-axis feature
 matrix (visual, motor, cognitive, auditory).
 
@@ -543,7 +543,7 @@ reference this tier — it is a design prerequisite, not a UX deliverable.
 - At least 3 ADRs exist and are Accepted
 - Architecture review report exists
 - `docs/architecture/control-manifest.md` exists
-- `design/accessibility-requirements.md` exists
+- `design/ux/accessibility-requirements.md` exists
 
 ---
 

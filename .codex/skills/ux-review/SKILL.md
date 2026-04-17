@@ -56,7 +56,7 @@ Before validating any spec, load:
    extract `## Input & Platform`. This is the authoritative source for which input
    methods the game supports — use it to drive the Input Method Coverage checks in
    Phase 3A, not the spec's own header. If unconfigured, fall back to the spec header.
-2. The accessibility tier committed to in `design/accessibility-requirements.md`
+2. The accessibility tier committed to in `design/ux/accessibility-requirements.md`
    (if it exists)
 3. The interaction pattern library at `design/ux/interaction-patterns.md` (if
    it exists)

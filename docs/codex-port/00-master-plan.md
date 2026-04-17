@@ -1,6 +1,6 @@
 # Codex Studio Full-Port Plan
 
-- Source baseline: `3807bcdfc8b78b02837f6f175cf9b138b39def73`
+- Source baseline: `267b93c1c1907bb6eb28372b3720dae389322712`
 - Source counts: `49 agents`, `72 skills`
 - Port strategy: preserve public names, port mechanically from `.claude`, track all intentional differences in `04-decision-log.md`
 - Current implementation mode: generate repeatable Codex artifacts from source files rather than hand-copying prompts

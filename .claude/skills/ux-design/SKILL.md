@@ -85,7 +85,7 @@ section. UX layout must align with the aesthetic commitments already made.
 
 ### 2g: Accessibility Requirements
 
-Check for `design/accessibility-requirements.md`. If found, read it. The spec
+Check for `design/ux/accessibility-requirements.md`. If found, read it. The spec
 must satisfy the accessibility tier committed to there.
 
 ### 2h: Input Method (from Project Config)
@@ -621,7 +621,7 @@ Present the data requirements as a table:
 
 #### Section G: Accessibility
 
-Cross-reference `design/accessibility-requirements.md` if it exists.
+Cross-reference `design/ux/accessibility-requirements.md` if it exists.
 
 Walk through the ux-designer agent's standard checklist for this screen:
 - Keyboard-only navigation path through all interactive elements
@@ -846,7 +846,7 @@ it for addition to the pattern library:
 navigation map in any related specs? Flag mismatches.
 
 **4. Accessibility coverage**: Does the spec address the accessibility tier
-committed to in `design/accessibility-requirements.md`? If not, flag open questions.
+committed to in `design/ux/accessibility-requirements.md`? If not, flag open questions.
 
 **5. Empty states**: Does every data-dependent element have an empty state defined?
 Flag any that don't.

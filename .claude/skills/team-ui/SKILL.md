@@ -45,7 +45,7 @@ Before designing anything, read and synthesize:
 - `design/player-journey.md` — player's state and context when they reach this screen
 - All GDD UI Requirements sections relevant to this feature
 - `design/ux/interaction-patterns.md` — existing patterns to reuse (not reinvent)
-- `design/accessibility-requirements.md` — committed accessibility tier (e.g., Basic, Enhanced, Full)
+- `design/ux/accessibility-requirements.md` — committed accessibility tier (e.g., Basic, Enhanced, Full)
 
 **If `design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
 > "interaction-patterns.md does not exist — no existing patterns to reuse."
@@ -102,7 +102,7 @@ Delegate to **ui-programmer**:
 - **UI NEVER owns or modifies game state** — display only; emit events for all player actions
 - All text through the localization system — no hardcoded player-facing strings
 - Support both input methods (keyboard/mouse AND gamepad)
-- Implement accessibility features per the committed tier in `design/accessibility-requirements.md`
+- Implement accessibility features per the committed tier in `design/ux/accessibility-requirements.md`
 - Wire up data binding to game state
 - **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `design/ux/interaction-patterns.md` before marking implementation complete
 - Output: implemented UI feature
@@ -112,7 +112,7 @@ Delegate to **ui-programmer**:
 Delegate in parallel:
 - **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation. Check accessibility features function correctly.
 - **art-director**: Verify visual consistency with art bible. Check at minimum and maximum supported resolutions.
-- **accessibility-specialist**: Verify compliance against the committed accessibility tier documented in `design/accessibility-requirements.md`. Flag any violations as blockers.
+- **accessibility-specialist**: Verify compliance against the committed accessibility tier documented in `design/ux/accessibility-requirements.md`. Flag any violations as blockers.
 
 All three review streams must report before proceeding to Phase 5.
 
