@@ -15,7 +15,7 @@ Hooks are configured in `.claude/settings.json` and fire automatically:
 | `session-stop.sh` | Stop | Session ends | Summarizes accomplishments and updates session log |
 | `log-agent.sh` | SubagentStart | Agent spawned | Audit trail start — logs subagent invocation with timestamp |
 | `log-agent-stop.sh` | SubagentStop | Agent stops | Audit trail stop — completes subagent record |
-| `validate-skill-change.sh` | PostToolUse (Write/Edit) | Skill file changes | Advises running `/skill-test` after any `.claude/skills/` file is written or edited |
+| `validate-skill-change.sh` | PostToolUse (Write/Edit) | Skill file changes | Advises running `/skill-test` after any `.codex/skills/` file is written or edited |
 
 Hook reference documentation: `.codex/docs/hooks-reference/`
 Hook input schema documentation: `.codex/docs/hooks-reference/hook-input-schemas.md`
