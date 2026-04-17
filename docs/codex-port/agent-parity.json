@@ -1,0 +1,394 @@
+[
+  {
+    "agent": "accessibility-specialist",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/accessibility-specialist.md",
+    "prompt_target": ".codex/agents/prompts/accessibility-specialist.md",
+    "config_target": ".codex/agents/configs/accessibility-specialist.toml"
+  },
+  {
+    "agent": "ai-programmer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/ai-programmer.md",
+    "prompt_target": ".codex/agents/prompts/ai-programmer.md",
+    "config_target": ".codex/agents/configs/ai-programmer.toml"
+  },
+  {
+    "agent": "analytics-engineer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/analytics-engineer.md",
+    "prompt_target": ".codex/agents/prompts/analytics-engineer.md",
+    "config_target": ".codex/agents/configs/analytics-engineer.toml"
+  },
+  {
+    "agent": "art-director",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/art-director.md",
+    "prompt_target": ".codex/agents/prompts/art-director.md",
+    "config_target": ".codex/agents/configs/art-director.toml"
+  },
+  {
+    "agent": "audio-director",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/audio-director.md",
+    "prompt_target": ".codex/agents/prompts/audio-director.md",
+    "config_target": ".codex/agents/configs/audio-director.toml"
+  },
+  {
+    "agent": "community-manager",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/community-manager.md",
+    "prompt_target": ".codex/agents/prompts/community-manager.md",
+    "config_target": ".codex/agents/configs/community-manager.toml"
+  },
+  {
+    "agent": "creative-director",
+    "tier": "Tier 1",
+    "scope": "shared",
+    "source": ".claude/agents/creative-director.md",
+    "prompt_target": ".codex/agents/prompts/creative-director.md",
+    "config_target": ".codex/agents/configs/creative-director.toml"
+  },
+  {
+    "agent": "devops-engineer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/devops-engineer.md",
+    "prompt_target": ".codex/agents/prompts/devops-engineer.md",
+    "config_target": ".codex/agents/configs/devops-engineer.toml"
+  },
+  {
+    "agent": "economy-designer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/economy-designer.md",
+    "prompt_target": ".codex/agents/prompts/economy-designer.md",
+    "config_target": ".codex/agents/configs/economy-designer.toml"
+  },
+  {
+    "agent": "engine-programmer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/engine-programmer.md",
+    "prompt_target": ".codex/agents/prompts/engine-programmer.md",
+    "config_target": ".codex/agents/configs/engine-programmer.toml"
+  },
+  {
+    "agent": "game-designer",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/game-designer.md",
+    "prompt_target": ".codex/agents/prompts/game-designer.md",
+    "config_target": ".codex/agents/configs/game-designer.toml"
+  },
+  {
+    "agent": "gameplay-programmer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/gameplay-programmer.md",
+    "prompt_target": ".codex/agents/prompts/gameplay-programmer.md",
+    "config_target": ".codex/agents/configs/gameplay-programmer.toml"
+  },
+  {
+    "agent": "godot-csharp-specialist",
+    "tier": "Tier 3",
+    "scope": "godot",
+    "source": ".claude/agents/godot-csharp-specialist.md",
+    "prompt_target": ".codex/agents/prompts/godot-csharp-specialist.md",
+    "config_target": ".codex/agents/configs/godot-csharp-specialist.toml"
+  },
+  {
+    "agent": "godot-gdextension-specialist",
+    "tier": "Tier 3",
+    "scope": "godot",
+    "source": ".claude/agents/godot-gdextension-specialist.md",
+    "prompt_target": ".codex/agents/prompts/godot-gdextension-specialist.md",
+    "config_target": ".codex/agents/configs/godot-gdextension-specialist.toml"
+  },
+  {
+    "agent": "godot-gdscript-specialist",
+    "tier": "Tier 3",
+    "scope": "godot",
+    "source": ".claude/agents/godot-gdscript-specialist.md",
+    "prompt_target": ".codex/agents/prompts/godot-gdscript-specialist.md",
+    "config_target": ".codex/agents/configs/godot-gdscript-specialist.toml"
+  },
+  {
+    "agent": "godot-shader-specialist",
+    "tier": "Tier 3",
+    "scope": "godot",
+    "source": ".claude/agents/godot-shader-specialist.md",
+    "prompt_target": ".codex/agents/prompts/godot-shader-specialist.md",
+    "config_target": ".codex/agents/configs/godot-shader-specialist.toml"
+  },
+  {
+    "agent": "godot-specialist",
+    "tier": "Tier 3",
+    "scope": "godot",
+    "source": ".claude/agents/godot-specialist.md",
+    "prompt_target": ".codex/agents/prompts/godot-specialist.md",
+    "config_target": ".codex/agents/configs/godot-specialist.toml"
+  },
+  {
+    "agent": "lead-programmer",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/lead-programmer.md",
+    "prompt_target": ".codex/agents/prompts/lead-programmer.md",
+    "config_target": ".codex/agents/configs/lead-programmer.toml"
+  },
+  {
+    "agent": "level-designer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/level-designer.md",
+    "prompt_target": ".codex/agents/prompts/level-designer.md",
+    "config_target": ".codex/agents/configs/level-designer.toml"
+  },
+  {
+    "agent": "live-ops-designer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/live-ops-designer.md",
+    "prompt_target": ".codex/agents/prompts/live-ops-designer.md",
+    "config_target": ".codex/agents/configs/live-ops-designer.toml"
+  },
+  {
+    "agent": "localization-lead",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/localization-lead.md",
+    "prompt_target": ".codex/agents/prompts/localization-lead.md",
+    "config_target": ".codex/agents/configs/localization-lead.toml"
+  },
+  {
+    "agent": "narrative-director",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/narrative-director.md",
+    "prompt_target": ".codex/agents/prompts/narrative-director.md",
+    "config_target": ".codex/agents/configs/narrative-director.toml"
+  },
+  {
+    "agent": "network-programmer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/network-programmer.md",
+    "prompt_target": ".codex/agents/prompts/network-programmer.md",
+    "config_target": ".codex/agents/configs/network-programmer.toml"
+  },
+  {
+    "agent": "performance-analyst",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/performance-analyst.md",
+    "prompt_target": ".codex/agents/prompts/performance-analyst.md",
+    "config_target": ".codex/agents/configs/performance-analyst.toml"
+  },
+  {
+    "agent": "producer",
+    "tier": "Tier 1",
+    "scope": "shared",
+    "source": ".claude/agents/producer.md",
+    "prompt_target": ".codex/agents/prompts/producer.md",
+    "config_target": ".codex/agents/configs/producer.toml"
+  },
+  {
+    "agent": "prototyper",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/prototyper.md",
+    "prompt_target": ".codex/agents/prompts/prototyper.md",
+    "config_target": ".codex/agents/configs/prototyper.toml"
+  },
+  {
+    "agent": "qa-lead",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/qa-lead.md",
+    "prompt_target": ".codex/agents/prompts/qa-lead.md",
+    "config_target": ".codex/agents/configs/qa-lead.toml"
+  },
+  {
+    "agent": "qa-tester",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/qa-tester.md",
+    "prompt_target": ".codex/agents/prompts/qa-tester.md",
+    "config_target": ".codex/agents/configs/qa-tester.toml"
+  },
+  {
+    "agent": "release-manager",
+    "tier": "Tier 2",
+    "scope": "shared",
+    "source": ".claude/agents/release-manager.md",
+    "prompt_target": ".codex/agents/prompts/release-manager.md",
+    "config_target": ".codex/agents/configs/release-manager.toml"
+  },
+  {
+    "agent": "security-engineer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/security-engineer.md",
+    "prompt_target": ".codex/agents/prompts/security-engineer.md",
+    "config_target": ".codex/agents/configs/security-engineer.toml"
+  },
+  {
+    "agent": "sound-designer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/sound-designer.md",
+    "prompt_target": ".codex/agents/prompts/sound-designer.md",
+    "config_target": ".codex/agents/configs/sound-designer.toml"
+  },
+  {
+    "agent": "systems-designer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/systems-designer.md",
+    "prompt_target": ".codex/agents/prompts/systems-designer.md",
+    "config_target": ".codex/agents/configs/systems-designer.toml"
+  },
+  {
+    "agent": "technical-artist",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/technical-artist.md",
+    "prompt_target": ".codex/agents/prompts/technical-artist.md",
+    "config_target": ".codex/agents/configs/technical-artist.toml"
+  },
+  {
+    "agent": "technical-director",
+    "tier": "Tier 1",
+    "scope": "shared",
+    "source": ".claude/agents/technical-director.md",
+    "prompt_target": ".codex/agents/prompts/technical-director.md",
+    "config_target": ".codex/agents/configs/technical-director.toml"
+  },
+  {
+    "agent": "tools-programmer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/tools-programmer.md",
+    "prompt_target": ".codex/agents/prompts/tools-programmer.md",
+    "config_target": ".codex/agents/configs/tools-programmer.toml"
+  },
+  {
+    "agent": "ue-blueprint-specialist",
+    "tier": "Tier 3",
+    "scope": "unreal",
+    "source": ".claude/agents/ue-blueprint-specialist.md",
+    "prompt_target": ".codex/agents/prompts/ue-blueprint-specialist.md",
+    "config_target": ".codex/agents/configs/ue-blueprint-specialist.toml"
+  },
+  {
+    "agent": "ue-gas-specialist",
+    "tier": "Tier 3",
+    "scope": "unreal",
+    "source": ".claude/agents/ue-gas-specialist.md",
+    "prompt_target": ".codex/agents/prompts/ue-gas-specialist.md",
+    "config_target": ".codex/agents/configs/ue-gas-specialist.toml"
+  },
+  {
+    "agent": "ue-replication-specialist",
+    "tier": "Tier 3",
+    "scope": "unreal",
+    "source": ".claude/agents/ue-replication-specialist.md",
+    "prompt_target": ".codex/agents/prompts/ue-replication-specialist.md",
+    "config_target": ".codex/agents/configs/ue-replication-specialist.toml"
+  },
+  {
+    "agent": "ue-umg-specialist",
+    "tier": "Tier 3",
+    "scope": "unreal",
+    "source": ".claude/agents/ue-umg-specialist.md",
+    "prompt_target": ".codex/agents/prompts/ue-umg-specialist.md",
+    "config_target": ".codex/agents/configs/ue-umg-specialist.toml"
+  },
+  {
+    "agent": "ui-programmer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/ui-programmer.md",
+    "prompt_target": ".codex/agents/prompts/ui-programmer.md",
+    "config_target": ".codex/agents/configs/ui-programmer.toml"
+  },
+  {
+    "agent": "unity-addressables-specialist",
+    "tier": "Tier 3",
+    "scope": "unity",
+    "source": ".claude/agents/unity-addressables-specialist.md",
+    "prompt_target": ".codex/agents/prompts/unity-addressables-specialist.md",
+    "config_target": ".codex/agents/configs/unity-addressables-specialist.toml"
+  },
+  {
+    "agent": "unity-dots-specialist",
+    "tier": "Tier 3",
+    "scope": "unity",
+    "source": ".claude/agents/unity-dots-specialist.md",
+    "prompt_target": ".codex/agents/prompts/unity-dots-specialist.md",
+    "config_target": ".codex/agents/configs/unity-dots-specialist.toml"
+  },
+  {
+    "agent": "unity-shader-specialist",
+    "tier": "Tier 3",
+    "scope": "unity",
+    "source": ".claude/agents/unity-shader-specialist.md",
+    "prompt_target": ".codex/agents/prompts/unity-shader-specialist.md",
+    "config_target": ".codex/agents/configs/unity-shader-specialist.toml"
+  },
+  {
+    "agent": "unity-specialist",
+    "tier": "Tier 3",
+    "scope": "unity",
+    "source": ".claude/agents/unity-specialist.md",
+    "prompt_target": ".codex/agents/prompts/unity-specialist.md",
+    "config_target": ".codex/agents/configs/unity-specialist.toml"
+  },
+  {
+    "agent": "unity-ui-specialist",
+    "tier": "Tier 3",
+    "scope": "unity",
+    "source": ".claude/agents/unity-ui-specialist.md",
+    "prompt_target": ".codex/agents/prompts/unity-ui-specialist.md",
+    "config_target": ".codex/agents/configs/unity-ui-specialist.toml"
+  },
+  {
+    "agent": "unreal-specialist",
+    "tier": "Tier 3",
+    "scope": "unreal",
+    "source": ".claude/agents/unreal-specialist.md",
+    "prompt_target": ".codex/agents/prompts/unreal-specialist.md",
+    "config_target": ".codex/agents/configs/unreal-specialist.toml"
+  },
+  {
+    "agent": "ux-designer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/ux-designer.md",
+    "prompt_target": ".codex/agents/prompts/ux-designer.md",
+    "config_target": ".codex/agents/configs/ux-designer.toml"
+  },
+  {
+    "agent": "world-builder",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/world-builder.md",
+    "prompt_target": ".codex/agents/prompts/world-builder.md",
+    "config_target": ".codex/agents/configs/world-builder.toml"
+  },
+  {
+    "agent": "writer",
+    "tier": "Tier 3",
+    "scope": "shared",
+    "source": ".claude/agents/writer.md",
+    "prompt_target": ".codex/agents/prompts/writer.md",
+    "config_target": ".codex/agents/configs/writer.toml"
+  }
+]

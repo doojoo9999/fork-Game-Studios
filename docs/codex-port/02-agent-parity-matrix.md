@@ -1,0 +1,53 @@
+# Agent Parity Matrix
+
+| Agent | Tier | Scope | Source | Prompt Target | Config Target | Source Model | Codex Model | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| accessibility-specialist | Tier 3 | shared | .claude/agents/accessibility-specialist.md | .codex/agents/prompts/accessibility-specialist.md | .codex/agents/configs/accessibility-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ai-programmer | Tier 3 | shared | .claude/agents/ai-programmer.md | .codex/agents/prompts/ai-programmer.md | .codex/agents/configs/ai-programmer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| analytics-engineer | Tier 3 | shared | .claude/agents/analytics-engineer.md | .codex/agents/prompts/analytics-engineer.md | .codex/agents/configs/analytics-engineer.toml | sonnet | gpt-5.4 (high) | ported |
+| art-director | Tier 2 | shared | .claude/agents/art-director.md | .codex/agents/prompts/art-director.md | .codex/agents/configs/art-director.toml | sonnet | gpt-5.4 (high) | ported |
+| audio-director | Tier 2 | shared | .claude/agents/audio-director.md | .codex/agents/prompts/audio-director.md | .codex/agents/configs/audio-director.toml | sonnet | gpt-5.4 (high) | ported |
+| community-manager | Tier 3 | shared | .claude/agents/community-manager.md | .codex/agents/prompts/community-manager.md | .codex/agents/configs/community-manager.toml | haiku | gpt-5.4-mini (medium) | ported |
+| creative-director | Tier 1 | shared | .claude/agents/creative-director.md | .codex/agents/prompts/creative-director.md | .codex/agents/configs/creative-director.toml | opus | gpt-5.4 (xhigh) | ported |
+| devops-engineer | Tier 3 | shared | .claude/agents/devops-engineer.md | .codex/agents/prompts/devops-engineer.md | .codex/agents/configs/devops-engineer.toml | haiku | gpt-5.4-mini (medium) | ported |
+| economy-designer | Tier 3 | shared | .claude/agents/economy-designer.md | .codex/agents/prompts/economy-designer.md | .codex/agents/configs/economy-designer.toml | sonnet | gpt-5.4 (high) | ported |
+| engine-programmer | Tier 3 | shared | .claude/agents/engine-programmer.md | .codex/agents/prompts/engine-programmer.md | .codex/agents/configs/engine-programmer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| game-designer | Tier 2 | shared | .claude/agents/game-designer.md | .codex/agents/prompts/game-designer.md | .codex/agents/configs/game-designer.toml | sonnet | gpt-5.4 (high) | ported |
+| gameplay-programmer | Tier 3 | shared | .claude/agents/gameplay-programmer.md | .codex/agents/prompts/gameplay-programmer.md | .codex/agents/configs/gameplay-programmer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| godot-csharp-specialist | Tier 3 | godot | .claude/agents/godot-csharp-specialist.md | .codex/agents/prompts/godot-csharp-specialist.md | .codex/agents/configs/godot-csharp-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| godot-gdextension-specialist | Tier 3 | godot | .claude/agents/godot-gdextension-specialist.md | .codex/agents/prompts/godot-gdextension-specialist.md | .codex/agents/configs/godot-gdextension-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| godot-gdscript-specialist | Tier 3 | godot | .claude/agents/godot-gdscript-specialist.md | .codex/agents/prompts/godot-gdscript-specialist.md | .codex/agents/configs/godot-gdscript-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| godot-shader-specialist | Tier 3 | godot | .claude/agents/godot-shader-specialist.md | .codex/agents/prompts/godot-shader-specialist.md | .codex/agents/configs/godot-shader-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| godot-specialist | Tier 3 | godot | .claude/agents/godot-specialist.md | .codex/agents/prompts/godot-specialist.md | .codex/agents/configs/godot-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| lead-programmer | Tier 2 | shared | .claude/agents/lead-programmer.md | .codex/agents/prompts/lead-programmer.md | .codex/agents/configs/lead-programmer.toml | sonnet | gpt-5.4 (high) | ported |
+| level-designer | Tier 3 | shared | .claude/agents/level-designer.md | .codex/agents/prompts/level-designer.md | .codex/agents/configs/level-designer.toml | sonnet | gpt-5.4 (high) | ported |
+| live-ops-designer | Tier 3 | shared | .claude/agents/live-ops-designer.md | .codex/agents/prompts/live-ops-designer.md | .codex/agents/configs/live-ops-designer.toml | sonnet | gpt-5.4 (high) | ported |
+| localization-lead | Tier 2 | shared | .claude/agents/localization-lead.md | .codex/agents/prompts/localization-lead.md | .codex/agents/configs/localization-lead.toml | sonnet | gpt-5.4 (high) | ported |
+| narrative-director | Tier 2 | shared | .claude/agents/narrative-director.md | .codex/agents/prompts/narrative-director.md | .codex/agents/configs/narrative-director.toml | sonnet | gpt-5.4 (high) | ported |
+| network-programmer | Tier 3 | shared | .claude/agents/network-programmer.md | .codex/agents/prompts/network-programmer.md | .codex/agents/configs/network-programmer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| performance-analyst | Tier 3 | shared | .claude/agents/performance-analyst.md | .codex/agents/prompts/performance-analyst.md | .codex/agents/configs/performance-analyst.toml | sonnet | gpt-5.4 (high) | ported |
+| producer | Tier 1 | shared | .claude/agents/producer.md | .codex/agents/prompts/producer.md | .codex/agents/configs/producer.toml | opus | gpt-5.4 (xhigh) | ported |
+| prototyper | Tier 3 | shared | .claude/agents/prototyper.md | .codex/agents/prompts/prototyper.md | .codex/agents/configs/prototyper.toml | sonnet | gpt-5.4 (high) | ported |
+| qa-lead | Tier 2 | shared | .claude/agents/qa-lead.md | .codex/agents/prompts/qa-lead.md | .codex/agents/configs/qa-lead.toml | sonnet | gpt-5.4 (high) | ported |
+| qa-tester | Tier 3 | shared | .claude/agents/qa-tester.md | .codex/agents/prompts/qa-tester.md | .codex/agents/configs/qa-tester.toml | sonnet | gpt-5.4 (high) | ported |
+| release-manager | Tier 2 | shared | .claude/agents/release-manager.md | .codex/agents/prompts/release-manager.md | .codex/agents/configs/release-manager.toml | sonnet | gpt-5.4 (high) | ported |
+| security-engineer | Tier 3 | shared | .claude/agents/security-engineer.md | .codex/agents/prompts/security-engineer.md | .codex/agents/configs/security-engineer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| sound-designer | Tier 3 | shared | .claude/agents/sound-designer.md | .codex/agents/prompts/sound-designer.md | .codex/agents/configs/sound-designer.toml | haiku | gpt-5.4-mini (medium) | ported |
+| systems-designer | Tier 3 | shared | .claude/agents/systems-designer.md | .codex/agents/prompts/systems-designer.md | .codex/agents/configs/systems-designer.toml | sonnet | gpt-5.4 (high) | ported |
+| technical-artist | Tier 3 | shared | .claude/agents/technical-artist.md | .codex/agents/prompts/technical-artist.md | .codex/agents/configs/technical-artist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| technical-director | Tier 1 | shared | .claude/agents/technical-director.md | .codex/agents/prompts/technical-director.md | .codex/agents/configs/technical-director.toml | opus | gpt-5.4 (xhigh) | ported |
+| tools-programmer | Tier 3 | shared | .claude/agents/tools-programmer.md | .codex/agents/prompts/tools-programmer.md | .codex/agents/configs/tools-programmer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ue-blueprint-specialist | Tier 3 | unreal | .claude/agents/ue-blueprint-specialist.md | .codex/agents/prompts/ue-blueprint-specialist.md | .codex/agents/configs/ue-blueprint-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ue-gas-specialist | Tier 3 | unreal | .claude/agents/ue-gas-specialist.md | .codex/agents/prompts/ue-gas-specialist.md | .codex/agents/configs/ue-gas-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ue-replication-specialist | Tier 3 | unreal | .claude/agents/ue-replication-specialist.md | .codex/agents/prompts/ue-replication-specialist.md | .codex/agents/configs/ue-replication-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ue-umg-specialist | Tier 3 | unreal | .claude/agents/ue-umg-specialist.md | .codex/agents/prompts/ue-umg-specialist.md | .codex/agents/configs/ue-umg-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ui-programmer | Tier 3 | shared | .claude/agents/ui-programmer.md | .codex/agents/prompts/ui-programmer.md | .codex/agents/configs/ui-programmer.toml | sonnet | gpt-5.2-codex (high) | ported |
+| unity-addressables-specialist | Tier 3 | unity | .claude/agents/unity-addressables-specialist.md | .codex/agents/prompts/unity-addressables-specialist.md | .codex/agents/configs/unity-addressables-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| unity-dots-specialist | Tier 3 | unity | .claude/agents/unity-dots-specialist.md | .codex/agents/prompts/unity-dots-specialist.md | .codex/agents/configs/unity-dots-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| unity-shader-specialist | Tier 3 | unity | .claude/agents/unity-shader-specialist.md | .codex/agents/prompts/unity-shader-specialist.md | .codex/agents/configs/unity-shader-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| unity-specialist | Tier 3 | unity | .claude/agents/unity-specialist.md | .codex/agents/prompts/unity-specialist.md | .codex/agents/configs/unity-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| unity-ui-specialist | Tier 3 | unity | .claude/agents/unity-ui-specialist.md | .codex/agents/prompts/unity-ui-specialist.md | .codex/agents/configs/unity-ui-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| unreal-specialist | Tier 3 | unreal | .claude/agents/unreal-specialist.md | .codex/agents/prompts/unreal-specialist.md | .codex/agents/configs/unreal-specialist.toml | sonnet | gpt-5.2-codex (high) | ported |
+| ux-designer | Tier 3 | shared | .claude/agents/ux-designer.md | .codex/agents/prompts/ux-designer.md | .codex/agents/configs/ux-designer.toml | sonnet | gpt-5.4 (high) | ported |
+| world-builder | Tier 3 | shared | .claude/agents/world-builder.md | .codex/agents/prompts/world-builder.md | .codex/agents/configs/world-builder.toml | sonnet | gpt-5.4 (high) | ported |
+| writer | Tier 3 | shared | .claude/agents/writer.md | .codex/agents/prompts/writer.md | .codex/agents/configs/writer.toml | sonnet | gpt-5.4 (high) | ported |

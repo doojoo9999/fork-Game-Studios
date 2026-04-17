@@ -58,6 +58,17 @@ The result: you still make every decision, but now you have a team that asks the
 | **Rules** | 11 | Path-scoped coding standards enforced when editing gameplay, engine, AI, UI, network code, and more |
 | **Templates** | 39 | Document templates for GDDs, UX specs, ADRs, sprint plans, HUD design, accessibility, and more |
 
+## Codex Port
+
+This fork now includes an in-repo Codex port scaffold:
+
+- `AGENTS.md` — Codex studio charter and anti-hallucination rules
+- `.codex/` — Codex role configs, prompt ports, and skill ports
+- `docs/codex-port/` — master plan, manifests, parity matrices, gap register, and active context
+- `tools/codex_port/bootstrap_codex_port.py` — repeatable generator that ports the current `.claude` baseline into Codex artifacts
+
+The original `.claude/**` assets remain in place as the source baseline while the parity port is completed.
+
 ## Studio Hierarchy
 
 Agents are organized into three tiers, matching how real studios operate:

@@ -1,0 +1,434 @@
+[
+  {
+    "skill": "adopt",
+    "phase": "auxiliary",
+    "source": ".claude/skills/adopt/SKILL.md",
+    "target": ".codex/skills/adopt/SKILL.md"
+  },
+  {
+    "skill": "architecture-decision",
+    "phase": "technical-setup",
+    "source": ".claude/skills/architecture-decision/SKILL.md",
+    "target": ".codex/skills/architecture-decision/SKILL.md"
+  },
+  {
+    "skill": "architecture-review",
+    "phase": "technical-setup",
+    "source": ".claude/skills/architecture-review/SKILL.md",
+    "target": ".codex/skills/architecture-review/SKILL.md"
+  },
+  {
+    "skill": "art-bible",
+    "phase": "concept",
+    "source": ".claude/skills/art-bible/SKILL.md",
+    "target": ".codex/skills/art-bible/SKILL.md"
+  },
+  {
+    "skill": "asset-audit",
+    "phase": "polish",
+    "source": ".claude/skills/asset-audit/SKILL.md",
+    "target": ".codex/skills/asset-audit/SKILL.md"
+  },
+  {
+    "skill": "asset-spec",
+    "phase": "pre-production",
+    "source": ".claude/skills/asset-spec/SKILL.md",
+    "target": ".codex/skills/asset-spec/SKILL.md"
+  },
+  {
+    "skill": "balance-check",
+    "phase": "polish",
+    "source": ".claude/skills/balance-check/SKILL.md",
+    "target": ".codex/skills/balance-check/SKILL.md"
+  },
+  {
+    "skill": "brainstorm",
+    "phase": "concept",
+    "source": ".claude/skills/brainstorm/SKILL.md",
+    "target": ".codex/skills/brainstorm/SKILL.md"
+  },
+  {
+    "skill": "bug-report",
+    "phase": "production",
+    "source": ".claude/skills/bug-report/SKILL.md",
+    "target": ".codex/skills/bug-report/SKILL.md"
+  },
+  {
+    "skill": "bug-triage",
+    "phase": "auxiliary",
+    "source": ".claude/skills/bug-triage/SKILL.md",
+    "target": ".codex/skills/bug-triage/SKILL.md"
+  },
+  {
+    "skill": "changelog",
+    "phase": "release",
+    "source": ".claude/skills/changelog/SKILL.md",
+    "target": ".codex/skills/changelog/SKILL.md"
+  },
+  {
+    "skill": "code-review",
+    "phase": "production",
+    "source": ".claude/skills/code-review/SKILL.md",
+    "target": ".codex/skills/code-review/SKILL.md"
+  },
+  {
+    "skill": "consistency-check",
+    "phase": "systems-design",
+    "source": ".claude/skills/consistency-check/SKILL.md",
+    "target": ".codex/skills/consistency-check/SKILL.md"
+  },
+  {
+    "skill": "content-audit",
+    "phase": "auxiliary",
+    "source": ".claude/skills/content-audit/SKILL.md",
+    "target": ".codex/skills/content-audit/SKILL.md"
+  },
+  {
+    "skill": "create-architecture",
+    "phase": "technical-setup",
+    "source": ".claude/skills/create-architecture/SKILL.md",
+    "target": ".codex/skills/create-architecture/SKILL.md"
+  },
+  {
+    "skill": "create-control-manifest",
+    "phase": "technical-setup",
+    "source": ".claude/skills/create-control-manifest/SKILL.md",
+    "target": ".codex/skills/create-control-manifest/SKILL.md"
+  },
+  {
+    "skill": "create-epics",
+    "phase": "pre-production",
+    "source": ".claude/skills/create-epics/SKILL.md",
+    "target": ".codex/skills/create-epics/SKILL.md"
+  },
+  {
+    "skill": "create-stories",
+    "phase": "pre-production",
+    "source": ".claude/skills/create-stories/SKILL.md",
+    "target": ".codex/skills/create-stories/SKILL.md"
+  },
+  {
+    "skill": "day-one-patch",
+    "phase": "auxiliary",
+    "source": ".claude/skills/day-one-patch/SKILL.md",
+    "target": ".codex/skills/day-one-patch/SKILL.md"
+  },
+  {
+    "skill": "design-review",
+    "phase": "systems-design",
+    "source": ".claude/skills/design-review/SKILL.md",
+    "target": ".codex/skills/design-review/SKILL.md"
+  },
+  {
+    "skill": "design-system",
+    "phase": "systems-design",
+    "source": ".claude/skills/design-system/SKILL.md",
+    "target": ".codex/skills/design-system/SKILL.md"
+  },
+  {
+    "skill": "dev-story",
+    "phase": "production",
+    "source": ".claude/skills/dev-story/SKILL.md",
+    "target": ".codex/skills/dev-story/SKILL.md"
+  },
+  {
+    "skill": "estimate",
+    "phase": "auxiliary",
+    "source": ".claude/skills/estimate/SKILL.md",
+    "target": ".codex/skills/estimate/SKILL.md"
+  },
+  {
+    "skill": "gate-check",
+    "phase": "auxiliary",
+    "source": ".claude/skills/gate-check/SKILL.md",
+    "target": ".codex/skills/gate-check/SKILL.md"
+  },
+  {
+    "skill": "help",
+    "phase": "auxiliary",
+    "source": ".claude/skills/help/SKILL.md",
+    "target": ".codex/skills/help/SKILL.md"
+  },
+  {
+    "skill": "hotfix",
+    "phase": "auxiliary",
+    "source": ".claude/skills/hotfix/SKILL.md",
+    "target": ".codex/skills/hotfix/SKILL.md"
+  },
+  {
+    "skill": "launch-checklist",
+    "phase": "release",
+    "source": ".claude/skills/launch-checklist/SKILL.md",
+    "target": ".codex/skills/launch-checklist/SKILL.md"
+  },
+  {
+    "skill": "localize",
+    "phase": "auxiliary",
+    "source": ".claude/skills/localize/SKILL.md",
+    "target": ".codex/skills/localize/SKILL.md"
+  },
+  {
+    "skill": "map-systems",
+    "phase": "concept",
+    "source": ".claude/skills/map-systems/SKILL.md",
+    "target": ".codex/skills/map-systems/SKILL.md"
+  },
+  {
+    "skill": "milestone-review",
+    "phase": "auxiliary",
+    "source": ".claude/skills/milestone-review/SKILL.md",
+    "target": ".codex/skills/milestone-review/SKILL.md"
+  },
+  {
+    "skill": "onboard",
+    "phase": "auxiliary",
+    "source": ".claude/skills/onboard/SKILL.md",
+    "target": ".codex/skills/onboard/SKILL.md"
+  },
+  {
+    "skill": "patch-notes",
+    "phase": "release",
+    "source": ".claude/skills/patch-notes/SKILL.md",
+    "target": ".codex/skills/patch-notes/SKILL.md"
+  },
+  {
+    "skill": "perf-profile",
+    "phase": "polish",
+    "source": ".claude/skills/perf-profile/SKILL.md",
+    "target": ".codex/skills/perf-profile/SKILL.md"
+  },
+  {
+    "skill": "playtest-report",
+    "phase": "polish",
+    "source": ".claude/skills/playtest-report/SKILL.md",
+    "target": ".codex/skills/playtest-report/SKILL.md"
+  },
+  {
+    "skill": "project-stage-detect",
+    "phase": "auxiliary",
+    "source": ".claude/skills/project-stage-detect/SKILL.md",
+    "target": ".codex/skills/project-stage-detect/SKILL.md"
+  },
+  {
+    "skill": "propagate-design-change",
+    "phase": "auxiliary",
+    "source": ".claude/skills/propagate-design-change/SKILL.md",
+    "target": ".codex/skills/propagate-design-change/SKILL.md"
+  },
+  {
+    "skill": "prototype",
+    "phase": "pre-production",
+    "source": ".claude/skills/prototype/SKILL.md",
+    "target": ".codex/skills/prototype/SKILL.md"
+  },
+  {
+    "skill": "qa-plan",
+    "phase": "production",
+    "source": ".claude/skills/qa-plan/SKILL.md",
+    "target": ".codex/skills/qa-plan/SKILL.md"
+  },
+  {
+    "skill": "quick-design",
+    "phase": "auxiliary",
+    "source": ".claude/skills/quick-design/SKILL.md",
+    "target": ".codex/skills/quick-design/SKILL.md"
+  },
+  {
+    "skill": "regression-suite",
+    "phase": "auxiliary",
+    "source": ".claude/skills/regression-suite/SKILL.md",
+    "target": ".codex/skills/regression-suite/SKILL.md"
+  },
+  {
+    "skill": "release-checklist",
+    "phase": "release",
+    "source": ".claude/skills/release-checklist/SKILL.md",
+    "target": ".codex/skills/release-checklist/SKILL.md"
+  },
+  {
+    "skill": "retrospective",
+    "phase": "production",
+    "source": ".claude/skills/retrospective/SKILL.md",
+    "target": ".codex/skills/retrospective/SKILL.md"
+  },
+  {
+    "skill": "reverse-document",
+    "phase": "auxiliary",
+    "source": ".claude/skills/reverse-document/SKILL.md",
+    "target": ".codex/skills/reverse-document/SKILL.md"
+  },
+  {
+    "skill": "review-all-gdds",
+    "phase": "systems-design",
+    "source": ".claude/skills/review-all-gdds/SKILL.md",
+    "target": ".codex/skills/review-all-gdds/SKILL.md"
+  },
+  {
+    "skill": "scope-check",
+    "phase": "production",
+    "source": ".claude/skills/scope-check/SKILL.md",
+    "target": ".codex/skills/scope-check/SKILL.md"
+  },
+  {
+    "skill": "security-audit",
+    "phase": "auxiliary",
+    "source": ".claude/skills/security-audit/SKILL.md",
+    "target": ".codex/skills/security-audit/SKILL.md"
+  },
+  {
+    "skill": "setup-engine",
+    "phase": "concept",
+    "source": ".claude/skills/setup-engine/SKILL.md",
+    "target": ".codex/skills/setup-engine/SKILL.md"
+  },
+  {
+    "skill": "skill-improve",
+    "phase": "testing-support",
+    "source": ".claude/skills/skill-improve/SKILL.md",
+    "target": ".codex/skills/skill-improve/SKILL.md"
+  },
+  {
+    "skill": "skill-test",
+    "phase": "testing-support",
+    "source": ".claude/skills/skill-test/SKILL.md",
+    "target": ".codex/skills/skill-test/SKILL.md"
+  },
+  {
+    "skill": "smoke-check",
+    "phase": "auxiliary",
+    "source": ".claude/skills/smoke-check/SKILL.md",
+    "target": ".codex/skills/smoke-check/SKILL.md"
+  },
+  {
+    "skill": "soak-test",
+    "phase": "auxiliary",
+    "source": ".claude/skills/soak-test/SKILL.md",
+    "target": ".codex/skills/soak-test/SKILL.md"
+  },
+  {
+    "skill": "sprint-plan",
+    "phase": "production",
+    "source": ".claude/skills/sprint-plan/SKILL.md",
+    "target": ".codex/skills/sprint-plan/SKILL.md"
+  },
+  {
+    "skill": "sprint-status",
+    "phase": "production",
+    "source": ".claude/skills/sprint-status/SKILL.md",
+    "target": ".codex/skills/sprint-status/SKILL.md"
+  },
+  {
+    "skill": "start",
+    "phase": "auxiliary",
+    "source": ".claude/skills/start/SKILL.md",
+    "target": ".codex/skills/start/SKILL.md"
+  },
+  {
+    "skill": "story-done",
+    "phase": "production",
+    "source": ".claude/skills/story-done/SKILL.md",
+    "target": ".codex/skills/story-done/SKILL.md"
+  },
+  {
+    "skill": "story-readiness",
+    "phase": "production",
+    "source": ".claude/skills/story-readiness/SKILL.md",
+    "target": ".codex/skills/story-readiness/SKILL.md"
+  },
+  {
+    "skill": "team-audio",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-audio/SKILL.md",
+    "target": ".codex/skills/team-audio/SKILL.md"
+  },
+  {
+    "skill": "team-combat",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-combat/SKILL.md",
+    "target": ".codex/skills/team-combat/SKILL.md"
+  },
+  {
+    "skill": "team-level",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-level/SKILL.md",
+    "target": ".codex/skills/team-level/SKILL.md"
+  },
+  {
+    "skill": "team-live-ops",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-live-ops/SKILL.md",
+    "target": ".codex/skills/team-live-ops/SKILL.md"
+  },
+  {
+    "skill": "team-narrative",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-narrative/SKILL.md",
+    "target": ".codex/skills/team-narrative/SKILL.md"
+  },
+  {
+    "skill": "team-polish",
+    "phase": "polish",
+    "source": ".claude/skills/team-polish/SKILL.md",
+    "target": ".codex/skills/team-polish/SKILL.md"
+  },
+  {
+    "skill": "team-qa",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-qa/SKILL.md",
+    "target": ".codex/skills/team-qa/SKILL.md"
+  },
+  {
+    "skill": "team-release",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-release/SKILL.md",
+    "target": ".codex/skills/team-release/SKILL.md"
+  },
+  {
+    "skill": "team-ui",
+    "phase": "team-orchestration",
+    "source": ".claude/skills/team-ui/SKILL.md",
+    "target": ".codex/skills/team-ui/SKILL.md"
+  },
+  {
+    "skill": "tech-debt",
+    "phase": "auxiliary",
+    "source": ".claude/skills/tech-debt/SKILL.md",
+    "target": ".codex/skills/tech-debt/SKILL.md"
+  },
+  {
+    "skill": "test-evidence-review",
+    "phase": "testing-support",
+    "source": ".claude/skills/test-evidence-review/SKILL.md",
+    "target": ".codex/skills/test-evidence-review/SKILL.md"
+  },
+  {
+    "skill": "test-flakiness",
+    "phase": "testing-support",
+    "source": ".claude/skills/test-flakiness/SKILL.md",
+    "target": ".codex/skills/test-flakiness/SKILL.md"
+  },
+  {
+    "skill": "test-helpers",
+    "phase": "testing-support",
+    "source": ".claude/skills/test-helpers/SKILL.md",
+    "target": ".codex/skills/test-helpers/SKILL.md"
+  },
+  {
+    "skill": "test-setup",
+    "phase": "pre-production",
+    "source": ".claude/skills/test-setup/SKILL.md",
+    "target": ".codex/skills/test-setup/SKILL.md"
+  },
+  {
+    "skill": "ux-design",
+    "phase": "pre-production",
+    "source": ".claude/skills/ux-design/SKILL.md",
+    "target": ".codex/skills/ux-design/SKILL.md"
+  },
+  {
+    "skill": "ux-review",
+    "phase": "pre-production",
+    "source": ".claude/skills/ux-review/SKILL.md",
+    "target": ".codex/skills/ux-review/SKILL.md"
+  }
+]
