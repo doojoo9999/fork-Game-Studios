@@ -3,14 +3,14 @@ name: team-combat
 description: "Orchestrate the combat team: coordinates game-designer, gameplay-programmer, ai-programmer, technical-artist, sound-designer, and qa-tester to design, implement, and validate a combat feature end-to-end."
 argument-hint: "[combat feature description]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # team-combat
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/team-combat/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 **Argument check:** If no combat feature description is provided, output:
 > "Usage: `/team-combat [combat feature description]` — Provide a description of the combat feature to design and implement (e.g., `melee parry system`, `ranged weapon spread`)."
@@ -18,7 +18,7 @@ Then stop immediately without spawning any subagents or reading any files.
 
 When this skill is invoked with a valid argument, orchestrate the combat team through a structured pipeline.
 
-**Decision Points:** At each phase transition, use a direct user question to present
+**Decision Points:** At each phase transition, use a direct user prompt to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
@@ -29,7 +29,7 @@ The user must approve before moving to the next phase.
 - **ai-programmer** — Implement NPC/enemy AI behavior for the feature
 - **technical-artist** — Create VFX, shader effects, and visual feedback
 - **sound-designer** — Define audio events, impact sounds, and ambient combat audio
-- **engine specialist** (primary) — Validate architecture and implementation patterns are idiomatic for the engine (read from `.claude/docs/technical-preferences.md` Engine Specialists section)
+- **engine specialist** (primary) — Validate architecture and implementation patterns are idiomatic for the engine (read from `.codex/docs/technical-preferences.md` Engine Specialists section)
 - **qa-tester** — Write test cases and validate the implementation
 
 ## How to Delegate
@@ -91,11 +91,11 @@ Delegate to **qa-tester**:
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Codex multi-agent tools) returns BLOCKED, errors, or cannot complete:
+If any spawned agent (via `spawn_agent`) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via a direct user question with choices:
+3. **Offer options** by asking the user directly with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
@@ -110,7 +110,7 @@ Common blockers:
 ## File Write Protocol
 
 All file writes (design documents, implementation files, test cases) are
-delegated to sub-agents spawned via Codex multi-agent tools. Each sub-agent enforces the
+delegated to sub-agents spawned via `spawn_agent`. Each sub-agent enforces the
 "May I write to [path]?" protocol. This orchestrator does not write files directly.
 
 ## Output

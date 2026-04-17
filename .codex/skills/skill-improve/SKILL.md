@@ -3,14 +3,14 @@ name: skill-improve
 description: "Improve a skill using a test-fix-retest loop. Runs static checks, proposes targeted fixes, rewrites the skill, re-tests, and keeps or reverts based on score change."
 argument-hint: "[skill-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # skill-improve
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/skill-improve/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Skill Improve
 

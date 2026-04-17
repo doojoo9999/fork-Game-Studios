@@ -3,14 +3,14 @@ name: dev-story
 description: "Read a story file and implement it. Loads the full context (story, GDD requirement, ADR guidelines, control manifest), routes to the right programmer agent for the system and engine, implements the code and test, and confirms each acceptance criterion. The core implementation skill — run after /story-readiness, before /code-review and /story-done."
 argument-hint: "[story-path]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # dev-story
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/dev-story/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Dev Story
 
@@ -89,7 +89,7 @@ Read `docs/architecture/control-manifest.md`. Extract the rules for this story's
 - Performance guardrails
 
 Check: does the story's embedded Manifest Version match the current manifest header date?
-If they differ, use a direct user question before proceeding:
+If they differ, use a direct user prompt before proceeding:
 - Prompt: "Story was written against manifest v[story-date]. Current manifest is v[current-date]. New rules may apply. How do you want to proceed?"
 - Options:
   - `[A] Update story manifest version and implement with current rules (Recommended)`
@@ -107,7 +107,7 @@ After extracting the **Dependencies** list from the story file, validate each:
 1. Glob `production/epics/**/*.md` to find each dependency story file.
 2. Read its `Status:` field.
 3. If any dependency has Status other than `Complete` or `Done`:
-   - Use a direct user question:
+   - Use a direct user prompt:
      - Prompt: "Story '[current story]' depends on '[dependency title]' which is currently [status], not Complete. How do you want to proceed?"
      - Options:
        - `[A] Proceed anyway — I accept the dependency risk`
@@ -122,7 +122,7 @@ If a dependency file cannot be found: warn "Dependency story not found: [path]. 
 ---
 
 ### Engine reference
-Read `.claude/docs/technical-preferences.md`:
+Read `.codex/docs/technical-preferences.md`:
 - `Engine:` value — determines which programmer agents to use
 - Naming conventions (class names, file names, signal/event names)
 - Performance budgets (frame budget, memory ceiling)
@@ -133,7 +133,7 @@ Read `.claude/docs/technical-preferences.md`:
 ## Phase 3: Route to the Right Programmer
 
 Based on the story's **Layer**, **Type**, and **system name**, determine which
-specialist to spawn via Codex multi-agent tools.
+specialist to spawn via `spawn_agent`.
 
 **Config/Data stories — skip agent spawning entirely:**
 If the story's Type is `Config/Data`, no programmer agent or engine specialist is needed. Jump directly to Phase 4 (Config/Data note). The implementation is a data file edit — no routing table evaluation, no engine specialist.
@@ -152,7 +152,7 @@ If the story's Type is `Config/Data`, no programmer agent or engine specialist i
 
 ### Engine specialist — always spawn as secondary for code stories
 
-Read the `Engine Specialists` section of `.claude/docs/technical-preferences.md`
+Read the `Engine Specialists` section of `.codex/docs/technical-preferences.md`
 to get the configured primary specialist. Spawn them alongside the primary agent
 when the story involves engine-specific APIs, patterns, or the ADR has HIGH
 engine risk.
@@ -171,7 +171,7 @@ assumptions about post-cutoff engine APIs that need expert verification.
 
 ## Phase 4: Implement
 
-Spawn the chosen programmer agent(s) via Codex multi-agent tools with the full context package:
+Spawn the chosen programmer agent(s) via `spawn_agent` with the full context package:
 
 Provide the agent with:
 1. The complete story file content
@@ -282,11 +282,11 @@ Create `active.md` if it does not exist. Confirm: "Session state updated."
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Codex multi-agent tools) returns BLOCKED, errors, or cannot complete:
+If any spawned agent (via `spawn_agent`) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via a direct user question with choices:
+3. **Offer options** by asking the user directly with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
@@ -301,7 +301,7 @@ Common blockers:
 
 ## Collaborative Protocol
 
-- **File writes are delegated** — all source code, test files, and evidence docs are written by sub-agents spawned via Codex multi-agent tools. Each sub-agent enforces the "May I write to [path]?" protocol individually. This orchestrator does not write files directly.
+- **File writes are delegated** — all source code, test files, and evidence docs are written by sub-agents spawned via `spawn_agent`. Each sub-agent enforces the "May I write to [path]?" protocol individually. This orchestrator does not write files directly.
 - **Load before implementing** — do not start coding until all context is loaded
   (story, TR-ID, ADR, manifest, engine prefs). Incomplete context produces code
   that drifts from design.

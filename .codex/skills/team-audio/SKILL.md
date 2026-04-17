@@ -3,21 +3,21 @@ name: team-audio
 description: "Orchestrate audio team: audio-director + sound-designer + technical-artist + gameplay-programmer for full audio pipeline from direction to implementation."
 argument-hint: "[feature or area to design audio for]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # team-audio
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/team-audio/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 If no argument is provided, output usage guidance and exit without spawning any agents:
-> Usage: `/team-audio [feature or area]` — specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use a direct user question here; output the guidance directly.
+> Usage: `/team-audio [feature or area]` — specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use a direct user prompt here; output the guidance directly.
 
 When this skill is invoked with an argument, orchestrate the audio team through a structured pipeline.
 
-**Decision Points:** At each step transition, use a direct user question to present
+**Decision Points:** At each step transition, use a direct user prompt to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next step.
@@ -75,7 +75,7 @@ Spawn the `technical-artist` agent to:
 - Plan streaming vs preloaded asset strategy
 - Design any audio-reactive visual effects
 
-Spawn the **primary engine specialist** in parallel (from `.claude/docs/technical-preferences.md` Engine Specialists) to validate the integration approach:
+Spawn the **primary engine specialist** in parallel (from `.codex/docs/technical-preferences.md` Engine Specialists) to validate the integration approach:
 - Is the proposed audio middleware integration idiomatic for the engine? (e.g., Godot's built-in AudioStreamPlayer vs FMOD, Unity's Audio Mixer vs Wwise, Unreal's MetaSounds vs FMOD)
 - Any engine-specific audio node/component patterns that should be used?
 - Known audio system changes in the pinned engine version that affect the integration plan?
@@ -107,7 +107,7 @@ Verdict: **BLOCKED** — [reason]
 ## File Write Protocol
 
 All file writes (audio design docs, SFX specs, implementation files) are delegated
-to sub-agents spawned via Codex multi-agent tools. Each sub-agent enforces the "May I write to [path]?"
+to sub-agents spawned via `spawn_agent`. Each sub-agent enforces the "May I write to [path]?"
 protocol. This orchestrator does not write files directly.
 
 ## Next Steps
@@ -118,11 +118,11 @@ protocol. This orchestrator does not write files directly.
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Codex multi-agent tools) returns BLOCKED, errors, or cannot complete:
+If any spawned agent (via `spawn_agent`) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via a direct user question with choices:
+3. **Offer options** by asking the user directly with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first

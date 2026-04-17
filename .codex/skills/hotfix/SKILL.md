@@ -3,14 +3,14 @@ name: hotfix
 description: "Emergency fix workflow that bypasses normal sprint processes with a full audit trail. Creates hotfix branch, tracks approvals, and ensures the fix is backported correctly."
 argument-hint: "[bug-id or description]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # hotfix
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/hotfix/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 > **Explicit invocation only**: This skill should only run when the user explicitly requests it with `/hotfix`. Do not auto-invoke based on context matching.
 
@@ -96,7 +96,7 @@ All three must return APPROVE before proceeding. If any returns CONCERNS or REJE
 
 ## Phase 5b: QA Re-Entry Gate
 
-After approvals, determine the QA scope required before deploying the hotfix. Spawn `qa-lead` via Codex multi-agent tools with:
+After approvals, determine the QA scope required before deploying the hotfix. Spawn `qa-lead` via `spawn_agent` with:
 - The hotfix description and affected system
 - The regression test results from Phase 5
 - A list of all systems that touch the changed files (use Grep to find callers)

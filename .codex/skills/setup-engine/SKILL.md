@@ -3,14 +3,14 @@ name: setup-engine
 description: "Configure the project's game engine and version. Pins the engine in CLAUDE.md, detects knowledge gaps, and populates engine reference docs via WebSearch when the version is beyond the LLM's training data."
 argument-hint: "[engine] | [engine version] | refresh | upgrade [old-version] [new-version] | no args for guided selection"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # setup-engine
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/setup-engine/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 When this skill is invoked:
 
@@ -40,7 +40,7 @@ If no engine is specified, run an interactive engine selection process:
 
 ### If the user wants to pick without a concept, ask in this order:
 
-**Question 1 — Prior experience** (ask this first, always, via a direct user question):
+**Question 1 — Prior experience** (ask this first, always, via a direct user prompt):
 - Prompt: "Have you worked in any of these engines before?"
 - Options: `Godot` / `Unity` / `Unreal Engine 5` / `Multiple — I'll explain` / `None of them`
 - If they pick a specific engine → recommend that engine. Prior experience outweighs all other factors. Confirm with them and skip the matrix.
@@ -48,7 +48,7 @@ If no engine is specified, run an interactive engine selection process:
 
 **Questions 2-6 — Decision matrix inputs** (only if no prior engine experience):
 
-**Question 2 — Target platform** (ask this second, always, via a direct user question — platform eliminates or heavily weights engines before any other factor):
+**Question 2 — Target platform** (ask this second, always, via a direct user prompt — platform eliminates or heavily weights engines before any other factor):
 - Prompt: "What platforms are you targeting for this game?"
 - Options: `PC (Steam / Epic)` / `Mobile (iOS / Android)` / `Console` / `Web / Browser` / `Multiple platforms`
 - Platform rules that feed directly into the recommendation:
@@ -105,11 +105,11 @@ Do NOT use a simple scoring matrix that eliminates engines. Instead, reason thro
 2. Give a primary recommendation with honest reasoning
 3. Name the best alternative and when to choose it instead
 4. Explicitly state: "This is a starting point, not a verdict — you can always migrate engines, and many developers switch between projects."
-5. Use a direct user question to confirm: "Does this recommendation feel right, or would you like to explore a different engine?"
+5. Use a direct user prompt to confirm: "Does this recommendation feel right, or would you like to explore a different engine?"
    - Options: `[Primary engine] (Recommended)` / `[Alternative engine]` / `[Third engine]` / `Explore further` / `Type something`
 
 **If the user picks "Explore further":**
-Use a direct user question with concept-specific deep-dive topics. Always generate these options from the user's actual concept — do not use generic options. Always include at minimum:
+Use a direct user prompt with concept-specific deep-dive topics. Always generate these options from the user's actual concept — do not use generic options. Always include at minimum:
 - The primary engine's specific limitations for this concept (e.g., "How far can Godot 3D actually go for [genre]?")
 - The alternative engine's specific tradeoffs for this concept
 - Language choice impact on this concept's technical challenges
@@ -130,7 +130,7 @@ Once the engine is chosen:
 
 ---
 
-## 4. Update CLAUDE.md Technology Stack
+## 4. Update AGENTS.md Technology Stack
 
 ### Language Selection (Godot only)
 
@@ -144,12 +144,12 @@ If Godot was chosen, ask the user which language to use **before** showing the p
 >
 > Which will this project primarily use?"
 
-Record the choice. It determines the CLAUDE.md template, naming conventions, specialist routing, and which agent is spawned for code files throughout the project.
+Record the choice. It determines the AGENTS.md template, naming conventions, specialist routing, and which agent is spawned for code files throughout the project.
 
 ---
 
-Read `CLAUDE.md` and show the user the proposed Technology Stack changes.
-Ask: "May I write these engine settings to `CLAUDE.md`?"
+Read `AGENTS.md` and show the user the proposed Technology Stack changes.
+Ask: "May I write these engine settings to `AGENTS.md`?"
 
 Wait for confirmation before making any edits.
 
@@ -177,7 +177,7 @@ Update the Technology Stack section, replacing the `[CHOOSE]` placeholders with 
 
 ## 5. Populate Technical Preferences
 
-After updating CLAUDE.md, create or update `.claude/docs/technical-preferences.md` with
+After updating AGENTS.md, create or update `.codex/docs/technical-preferences.md` with
 engine-appropriate defaults. Read the existing template first, then fill in:
 
 ### Engine & Language Section
@@ -236,7 +236,7 @@ Example filled section:
 ```
 
 ### Remaining Sections
-- **Performance Budgets**: Use a direct user question:
+- **Performance Budgets**: Use a direct user prompt:
   - Prompt: "Should I set default performance budgets now, or leave them for later?"
   - Options: `[A] Set defaults now (60fps, 16.6ms frame budget, engine-appropriate draw call limit)` / `[B] Leave as [TO BE CONFIGURED] — I'll set these when I know my target hardware`
   - If [A]: populate with the suggested defaults. If [B]: leave as placeholder.
@@ -392,9 +392,9 @@ Wait for confirmation before writing any files.
 
 ---
 
-## 8. Update CLAUDE.md Import
+## 8. Update AGENTS.md Import
 
-Ask: "May I update the `@` import in `CLAUDE.md` to point to the new engine reference?"
+Ask: "May I update the `@` import in `AGENTS.md` to point to the new engine reference?"
 
 Wait for confirmation, then update the `@` import under "Engine Version Reference" to point to the
 correct engine:
@@ -558,7 +558,7 @@ Engine:          [name] [version]
 Language:        [GDScript | C# | GDScript + C# | C# | C++ + Blueprint]
 Knowledge Risk:  [LOW/MEDIUM/HIGH]
 Reference Docs:  [created/skipped]
-CLAUDE.md:       [updated]
+AGENTS.md:       [updated]
 Tech Prefs:      [created/updated]
 Agent Config:    [verified]
 
@@ -580,9 +580,9 @@ Verdict: **COMPLETE** — engine configured and reference docs populated.
 - NEVER guess an engine version — always verify via WebSearch or user confirmation
 - NEVER overwrite existing reference docs without asking — append or update
 - If reference docs already exist for a different engine, ask before replacing
-- Always show the user what you're about to change before making CLAUDE.md edits
+- Always show the user what you're about to change before making AGENTS.md edits
 - If WebSearch returns ambiguous results, show the user and let them decide
-- When the user chose **GDScript**: copy the GDScript CLAUDE.md template from Appendix A1 exactly. NEVER add "C++ via GDExtension" to the Language field. GDScript projects may use GDExtension, but it is not a primary project language. The `godot-gdextension-specialist` in the routing table is available for when native extensions are needed — it does not make C++ a project language.
+- When the user chose **GDScript**: copy the GDScript AGENTS.md template from Appendix A1 exactly. NEVER add "C++ via GDExtension" to the Language field. GDScript projects may use GDExtension, but it is not a primary project language. The `godot-gdextension-specialist` in the routing table is available for when native extensions are needed — it does not make C++ a project language.
 
 ---
 
@@ -592,7 +592,7 @@ All Godot-specific variants for language-dependent configuration. Referenced fro
 
 ---
 
-### A1. CLAUDE.md Technology Stack Templates
+### A1. AGENTS.md Technology Stack Templates
 
 **GDScript:**
 ```markdown

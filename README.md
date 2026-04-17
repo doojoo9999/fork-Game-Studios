@@ -60,14 +60,17 @@ The result: you still make every decision, but now you have a team that asks the
 
 ## Codex Port
 
-This fork now includes an in-repo Codex port scaffold:
+This fork now includes an in-repo Codex port surface:
 
 - `AGENTS.md` — Codex studio charter and anti-hallucination rules
-- `.codex/` — Codex role configs, prompt ports, and skill ports
-- `docs/codex-port/` — master plan, manifests, parity matrices, gap register, and active context
+- `.codex/agents/` — 49 Codex role configs and prompt ports
+- `.codex/skills/` — 72 Codex skill ports
+- `.codex/docs/` — Codex-facing supporting doc mirrors generated from the source baseline
+- `.codex/hooks.json` and `.codex/hooks/` — repo-local Codex hooks for supported lifecycle events
+- `docs/codex-port/` — master plan, manifests, parity matrices, decision log, and active context
 - `tools/codex_port/bootstrap_codex_port.py` — repeatable generator that ports the current `.claude` baseline into Codex artifacts
 
-The original `.claude/**` assets remain in place as the source baseline while the parity port is completed.
+The original `.claude/**` assets remain in place as the source baseline. Codex-facing prompts and skills resolve to `.codex/**`.
 
 ## Studio Hierarchy
 

@@ -3,19 +3,19 @@ name: onboard
 description: "Generates a contextual onboarding document for a new contributor or agent joining the project. Summarizes project state, architecture, conventions, and current priorities relevant to the specified role or area."
 argument-hint: "[role|area]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 model: haiku
 ---
 # onboard
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/onboard/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 1: Load Project Context
 
-Read CLAUDE.md for project overview and standards.
+Read AGENTS.md for project overview and standards.
 
 Read the relevant agent definition from `.claude/agents/` if a specific role is specified.
 
@@ -56,7 +56,7 @@ Read recent changes (git log if available) to understand current momentum.
 |------|---------|--------------|
 
 ## Current Standards and Conventions
-[Summary of conventions relevant to this role from CLAUDE.md and agent definition]
+[Summary of conventions relevant to this role from AGENTS.md and agent definition]
 
 ## Current State of Your Area
 [What has been built, what is in progress, what is planned next]

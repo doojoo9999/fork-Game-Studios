@@ -3,15 +3,15 @@ name: ux-design
 description: "Guided, section-by-section UX spec authoring for a screen, flow, or HUD. Reads game concept, player journey, and relevant GDDs to provide context-aware design guidance. Produces ux-spec.md (per screen/flow) or hud-design.md using the studio templates."
 argument-hint: "[screen/flow name] or 'hud' or 'patterns'"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: ux-designer
 ---
 # ux-design
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/ux-design/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 When this skill is invoked:
 
@@ -26,7 +26,7 @@ Three authoring modes exist based on the argument:
 | Any other value (e.g., `main-menu`, `inventory`) | UX spec for a screen or flow | `design/ux/[argument].md` |
 | No argument | Ask the user | (see below) |
 
-**If no argument is provided**, do not fail — ask instead. Use a direct user question:
+**If no argument is provided**, do not fail — ask instead. Use a direct user prompt:
 - "What are we designing today?"
   - Options: "A specific screen or flow (I'll name it)", "The game HUD", "The interaction pattern library", "I'm not sure — help me figure it out"
 
@@ -96,7 +96,7 @@ must satisfy the accessibility tier committed to there.
 
 ### 2h: Input Method (from Project Config)
 
-Read `.claude/docs/technical-preferences.md` and extract the `## Input & Platform`
+Read `.codex/docs/technical-preferences.md` and extract the `## Input & Platform`
 section. Store these values for use throughout the skill — they drive the
 Interaction Map and inform accessibility requirements:
 
@@ -415,10 +415,10 @@ Context  ->  Questions  ->  Options  ->  Decision  ->  Draft  ->  Approval  ->  
 
 1. **Context**: State what this section needs to contain and surface any relevant
    constraints from context gathered in Phase 2.
-2. **Questions**: Ask what is needed to draft this section. Use a direct user question
+2. **Questions**: Ask what is needed to draft this section. Use a direct user prompt
    for constrained choices, conversational text for open-ended exploration.
 3. **Options**: Where design choices exist, present 2-4 approaches with pros/cons.
-   Explain reasoning in conversation, then use a direct user question to capture the decision.
+   Explain reasoning in conversation, then use a direct user prompt to capture the decision.
 4. **Decision**: User picks an approach or provides custom direction.
 5. **Draft**: Write the section content in conversation for review. Flag provisional
    assumptions explicitly.
@@ -519,7 +519,7 @@ This is the largest and most interactive section. Work through it in sub-section
 
 **Sub-section 4 — ASCII Wireframe**:
 - Offer to generate an ASCII wireframe based on the zone layout and component list.
-- Use a direct user question: "Want an ASCII wireframe as part of this spec?"
+- Use a direct user prompt: "Want an ASCII wireframe as part of this spec?"
   - Options: "Yes, include one", "No, I'll attach a separate file"
 - If yes, produce the wireframe in conversation first. Ask for feedback before
   writing it to file.
@@ -637,7 +637,7 @@ Walk through the ux-designer agent's standard checklist for this screen:
 - Screen reader considerations for any non-text elements
 - Any motion or animation that needs a reduced-motion alternative
 
-Use a direct user question to surface any open questions on accessibility tier:
+Use a direct user prompt to surface any open questions on accessibility tier:
 - "Has the accessibility tier been committed to for this project?"
   - Options: "Yes, read from requirements doc", "Not yet — let's flag it as a question", "Skip accessibility section for now"
 
@@ -722,7 +722,7 @@ For each item, ask the user to categorize it:
 | **On Demand** | Player must actively request it (toggle, hold button) |
 | **Hidden** | Communicated through world/audio, never on-screen text |
 
-Use a direct user question to step through items in groups of 3-4, not all at once.
+Use a direct user prompt to step through items in groups of 3-4, not all at once.
 This is the most consequential design decision in the HUD — do not rush it.
 
 **Conflict check**: If the information philosophy (Section A) says "nearly HUD-free"
@@ -888,7 +888,7 @@ Before presenting options, state clearly:
 > implementation pipeline. The Pre-Production gate requires all key screen specs
 > to have a review verdict."
 
-Then use a direct user question:
+Then use a direct user prompt:
 - "Run `/ux-review [filename]` now, or do something else first?"
   - Options:
     - "Run `/ux-review` now — validate this spec"
@@ -934,7 +934,7 @@ specific sub-topics, additional context or coordination may be needed:
 | Narrative/lore visible in the UI | `narrative-director` — for flavor text, item names, lore panels |
 | Accessibility tier decisions | Handled by this session — owned by ux-designer |
 
-When delegating to another agent via the Task tool:
+When delegating to another agent via `spawn_agent`:
 - Provide: screen name, game concept summary, the specific question needing expert input
 - The agent returns analysis to this session
 - This session presents the agent's output to the user
@@ -948,7 +948,7 @@ When delegating to another agent via the Task tool:
 This skill follows the collaborative design principle at every step:
 
 1. **Question -> Options -> Decision -> Draft -> Approval** for every section
-2. **a direct user question** at every decision point (Explain -> Capture pattern):
+2. **direct user prompt** at every decision point (Explain -> Capture pattern):
    - Phase 2: "Ready to start, or need more context?"
    - Phase 3: "May I create the skeleton?"
    - Phase 4 (each section): design questions, approach options, draft approval

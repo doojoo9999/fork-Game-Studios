@@ -3,15 +3,15 @@ name: gate-check
 description: "Validate readiness to advance between development phases. Produces a PASS/CONCERNS/FAIL verdict with specific blockers and required artifacts. Use when user says 'are we ready to move to X', 'can we advance to production', 'check if we can start the next phase', 'pass the gate'."
 argument-hint: "[target-phase: systems-design | technical-setup | pre-production | production | polish | release] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 model: opus
 ---
 # gate-check
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/gate-check/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Phase Gate Validation
 
@@ -53,7 +53,7 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 - **No argument**: Auto-detect current stage using the same heuristics as
   `/project-stage-detect`, then **confirm with the user before running**:
 
-  Use a direct user question:
+  Use a direct user prompt:
   - Prompt: "Detected stage: **[current stage]**. Running gate for [Current] → [Next] transition. Is this correct?"
   - Options:
     - `[A] Yes — run this gate`
@@ -100,8 +100,8 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 ### Gate: Technical Setup → Pre-Production
 
 **Required Artifacts:**
-- [ ] Engine chosen (CLAUDE.md Technology Stack is not `[CHOOSE]`)
-- [ ] Technical preferences configured (`.claude/docs/technical-preferences.md` populated)
+- [ ] Engine chosen (AGENTS.md Technology Stack is not `[CHOOSE]`)
+- [ ] Technical preferences configured (`.codex/docs/technical-preferences.md` populated)
 - [ ] Art bible exists at `design/art/art-bible.md` with at least Sections 1–4 (Visual Identity Foundation)
 - [ ] At least 3 Architecture Decision Records in `docs/architecture/` covering
       Foundation-layer systems (scene management, event architecture, save/load)
@@ -301,14 +301,14 @@ For items that can't be automatically verified, **ask the user**:
 
 ## 4b. Director Panel Assessment
 
-Before generating the final verdict, spawn all four directors as **parallel subagents** via Codex multi-agent tools using the parallel gate protocol from `.claude/docs/director-gates.md`. Issue all four Task calls simultaneously — do not wait for one before starting the next.
+Before generating the final verdict, spawn all four directors as **parallel subagents** via `spawn_agent` using the parallel gate protocol from `.codex/docs/director-gates.md`. Issue all four worker-agent spawns simultaneously — do not wait for one before starting the next.
 
 **Spawn in parallel:**
 
-1. **`creative-director`** — gate **CD-PHASE-GATE** (`.claude/docs/director-gates.md`)
-2. **`technical-director`** — gate **TD-PHASE-GATE** (`.claude/docs/director-gates.md`)
-3. **`producer`** — gate **PR-PHASE-GATE** (`.claude/docs/director-gates.md`)
-4. **`art-director`** — gate **AD-PHASE-GATE** (`.claude/docs/director-gates.md`)
+1. **`creative-director`** — gate **CD-PHASE-GATE** (`.codex/docs/director-gates.md`)
+2. **`technical-director`** — gate **TD-PHASE-GATE** (`.codex/docs/director-gates.md`)
+3. **`producer`** — gate **PR-PHASE-GATE** (`.codex/docs/director-gates.md`)
+4. **`art-director`** — gate **AD-PHASE-GATE** (`.codex/docs/director-gates.md`)
 
 Pass to each: target phase name, list of artifacts present, and the context fields listed in that gate's definition.
 
@@ -430,7 +430,7 @@ echo -n "Production" > production/stage.txt
 
 ## 7. Closing Next-Step Widget
 
-After the verdict is presented and any stage.txt update is complete, close with a structured next-step prompt using a direct user question.
+After the verdict is presented and any stage.txt update is complete, close with a structured next-step prompt using a direct user prompt.
 
 **Tailor the options to the gate that just ran:**
 
@@ -468,13 +468,13 @@ Based on the verdict, suggest specific next steps:
 - **Small design change needed?** → `/quick-design` for changes under ~4 hours (bypasses full GDD pipeline)
 - **No UX specs?** → `/ux-design [screen name]` to author specs, or `/team-ui [feature]` for full pipeline
 - **UX specs not reviewed?** → `/ux-review [file]` or `/ux-review all` to validate
-- **No accessibility requirements doc?** → Use a direct user question to offer to create it now:
+- **No accessibility requirements doc?** → Use a direct user prompt to offer to create it now:
   - Prompt: "The gate requires `design/accessibility-requirements.md`. Shall I create it from the template?"
   - Options: `Create it now — I'll choose an accessibility tier`, `I'll create it myself`, `Skip for now`
-  - If "Create it now": use a second a direct user question to ask for the tier:
+  - If "Create it now": use a second a direct user prompt to ask for the tier:
     - Prompt: "Which accessibility tier fits this project?"
     - Options: `Basic — remapping + subtitles only (lowest effort)`, `Standard — Basic + colorblind modes + scalable UI`, `Comprehensive — Standard + motor accessibility + full settings menu`, `Exemplary — Comprehensive + external audit + full customization`
-  - Then write `design/accessibility-requirements.md` using the template at `.claude/docs/templates/accessibility-requirements.md`, filling in the chosen tier. Confirm: "May I write `design/accessibility-requirements.md`?"
+  - Then write `design/accessibility-requirements.md` using the template at `.codex/docs/templates/accessibility-requirements.md`, filling in the chosen tier. Confirm: "May I write `design/accessibility-requirements.md`?"
 - **No interaction pattern library?** → `/ux-design patterns` to initialize it
 - **GDDs not cross-reviewed?** → `/review-all-gdds` (run after all MVP GDDs are individually approved)
 - **Cross-GDD consistency issues?** → fix flagged GDDs, then re-run `/review-all-gdds`

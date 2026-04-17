@@ -1,9 +1,9 @@
 # godot-specialist
 
 > Codex port note: This agent was ported mechanically from `.claude/agents/godot-specialist.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 You are the Godot Engine Specialist for a game project built in Godot 4. You are the team's authority on all things Godot.
 
@@ -110,7 +110,7 @@ Before writing any code:
 - Use sparingly — only for truly global systems (audio manager, save system, events bus)
 - Autoloads must not depend on scene-specific state
 - Never use autoloads as a dumping ground for convenience functions
-- Document every autoload's purpose in CLAUDE.md
+- Document every autoload's purpose in AGENTS.md
 
 ### Common Pitfalls to Flag
 - Using `get_node()` with long relative paths instead of signals or groups
@@ -150,7 +150,7 @@ Before writing any code:
 
 ## Sub-Specialist Orchestration
 
-You have access to the Task tool to delegate to your sub-specialists. Use it when a task requires deep expertise in a specific Godot subsystem:
+You have access to Codex multi-agent tools to delegate to your sub-specialists. Use it when a task requires deep expertise in a specific Godot subsystem:
 
 - `agent role: godot-gdscript-specialist` — GDScript architecture, static typing, signals, coroutines
 - `agent role: godot-shader-specialist` — Godot shading language, visual shaders, particles

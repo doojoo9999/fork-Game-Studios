@@ -3,14 +3,14 @@ name: bug-triage
 description: "Read all open bugs in production/qa/bugs/, re-evaluate priority vs. severity, assign to sprints, surface systemic trends, and produce a triage report. Run at sprint start or when the bug count grows enough to need re-prioritization."
 argument-hint: "[sprint | full | trend]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # bug-triage
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/bug-triage/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Bug Triage
 
@@ -66,7 +66,7 @@ If no sprint file exists: note "No sprint plan found — assigning to backlog on
 
 ### Step 2c — Load severity reference
 
-Read `.claude/docs/coding-standards.md` for severity/priority definitions if they
+Read `.codex/docs/coding-standards.md` for severity/priority definitions if they
 exist. If they do not exist, use the standard definitions in Step 3.
 
 ---

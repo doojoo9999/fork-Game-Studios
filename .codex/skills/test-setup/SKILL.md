@@ -3,14 +3,14 @@ name: test-setup
 description: "Scaffold the test framework and CI/CD pipeline for the project's engine. Creates the tests/ directory structure, engine-specific test runner configuration, and GitHub Actions workflow. Run once during Technical Setup phase before the first sprint begins."
 argument-hint: "[force]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # test-setup
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/test-setup/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Test Setup
 
@@ -30,7 +30,7 @@ A test framework installed at sprint four costs 3 sprints.
 ## Phase 1: Detect Engine and Existing State
 
 1. **Read engine config**:
-   - Read `.claude/docs/technical-preferences.md` and extract the `Engine:` value.
+   - Read `.codex/docs/technical-preferences.md` and extract the `Engine:` value.
    - If engine is not configured (`[TO BE CONFIGURED]`), stop:
      "Engine not configured. Run `/setup-engine` first, then re-run `/test-setup`."
 

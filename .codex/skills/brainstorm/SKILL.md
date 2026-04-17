@@ -3,14 +3,14 @@ name: brainstorm
 description: "Guided game concept ideation — from zero idea to a structured game concept document. Uses professional studio ideation techniques, player psychology frameworks, and structured creative exploration."
 argument-hint: "[genre or theme hint, or 'open'] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # brainstorm
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/brainstorm/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 When this skill is invoked:
 
@@ -21,7 +21,7 @@ When this skill is invoked:
    2. Else read `production/review-mode.txt` → use that value
    3. Else → default to `lean`
 
-   See `.claude/docs/director-gates.md` for the full check pattern.
+   See `.codex/docs/director-gates.md` for the full check pattern.
 
 2. **Check for existing concept work**:
    - Read `design/gdd/game-concept.md` if it exists (resume, don't restart)
@@ -32,13 +32,13 @@ When this skill is invoked:
    exploration** where the AI acts as a creative facilitator, not a replacement
    for the human's vision.
 
-   **Use a direct user question** at key decision points throughout brainstorming:
+   **Use a direct user prompt** at key decision points throughout brainstorming:
    - Constrained taste questions (genre preferences, scope, team size)
    - Concept selection ("Which 2-3 concepts resonate?") after presenting options
    - Direction choices ("Develop further, explore more, or prototype?")
    - Pillar ranking after concepts are refined
    Write full creative analysis in conversation text first, then use
-   a direct user question to capture the decision with concise labels.
+   a direct user prompt to capture the decision with concise labels.
 
    Professional studio brainstorming principles to follow:
    - Withhold judgment — no idea is bad during exploration
@@ -63,13 +63,13 @@ conversationally (not as a checklist):
 **Taste profile**:
 - What 3 games have you spent the most time with? What kept you coming back?
   *(Ask this as plain text — the user must be able to type specific game names freely.
-  Do NOT put this in an a direct user question with preset options.)*
+  Do NOT turn this into a preset-choice prompt with preset options.)*
 - Are there genres you love? Genres you avoid? Why?
 - Do you prefer games that challenge you, relax you, tell you stories,
-  or let you express yourself? *(Use a direct user question for this — constrained choice.)*
+  or let you express yourself? *(Use a direct user prompt for this — constrained choice.)*
 
 **Practical constraints** (shape the sandbox before brainstorming).
-Bundle these into a single multi-tab a direct user question with these exact tab labels:
+Bundle these into a single multi-tab a direct user prompt with these exact tab labels:
 - Tab "Experience" — "What kind of experience do you most want players to have?" (Challenge & Mastery / Story & Discovery / Expression & Creativity / Relaxation & Flow)
 - Tab "Timeline" — "What's your realistic development timeline?" (Weeks / Months / 1-2 years / Multi-year)
 - Tab "Dev level" — "Where are you in your dev journey?" (First game / Shipped before / Professional background)
@@ -112,12 +112,13 @@ For each concept, present:
 - **Why It Could Work** (1 sentence on market/audience fit)
 - **Biggest Risk** (1 sentence on the hardest unanswered question)
 
-Present all three. Then use a direct user question to capture the selection.
+Present all three. Then use a direct user prompt to capture the selection.
 
 **CRITICAL**: This MUST be a plain list call — no tabs, no form fields. Use exactly this structure:
 
 ```
-a direct user question(
+Ask the user directly:
+
   prompt: "Which concept resonates with you? You can pick one, combine elements, or ask for fresh directions.",
   options: [
     "Concept 1 — [Title]",
@@ -143,7 +144,7 @@ isolation, no amount of content or polish will save the game.
 
 **30-Second Loop** (moment-to-moment):
 
-Ask these as a direct user question calls — derive the options from the chosen concept, don't hardcode them:
+Ask these as a direct user prompt calls — derive the options from the chosen concept, don't hardcode them:
 
 1. **Core action feel** — prompt: "What's the primary feel of the core action?" Generate 3-4 options that fit the concept's genre and tone, plus a free-text escape (`I'll describe it`).
 
@@ -192,11 +193,11 @@ Then define **3+ anti-pillars** (what this game is NOT):
   be cool if..." features that don't serve the core vision
 - Frame as: "We will NOT do [thing] because it would compromise [pillar]"
 
-**Pillar confirmation**: After presenting the full pillar set, use a direct user question:
+**Pillar confirmation**: After presenting the full pillar set, use a direct user prompt:
 - Prompt: "Do these pillars feel right for your game?"
 - Options: `[A] Lock these in` / `[B] Rename or reframe one` / `[C] Swap a pillar out` / `[D] Something else`
 
-If the user selects B, C, or D, make the revision, then use a direct user question again:
+If the user selects B, C, or D, make the revision, then use a direct user prompt again:
 - Prompt: "Pillars updated. Ready to lock these in?"
 - Options: `[A] Lock these in` / `[B] Revise another pillar` / `[C] Something else`
 
@@ -207,15 +208,15 @@ Repeat until the user selects [A] Lock these in.
 - `lean` → skip both (not PHASE-GATEs). Note: "CD-PILLARS skipped — Lean mode. AD-CONCEPT-VISUAL skipped — Lean mode." Proceed to Phase 5.
 - `full` → spawn as normal.
 
-**After pillars and anti-pillars are agreed, spawn BOTH `creative-director` AND `art-director` via Codex multi-agent tools in parallel before moving to Phase 5. Issue both Task calls simultaneously — do not wait for one before starting the other.**
+**After pillars and anti-pillars are agreed, spawn BOTH `creative-director` AND `art-director` via `spawn_agent` in parallel before moving to Phase 5. Issue both worker-agent spawns simultaneously — do not wait for one before starting the other.**
 
-- **`creative-director`** — gate **CD-PILLARS** (`.claude/docs/director-gates.md`)
+- **`creative-director`** — gate **CD-PILLARS** (`.codex/docs/director-gates.md`)
   Pass: full pillar set with design tests, anti-pillars, core fantasy, unique hook.
 
-- **`art-director`** — gate **AD-CONCEPT-VISUAL** (`.claude/docs/director-gates.md`)
+- **`art-director`** — gate **AD-CONCEPT-VISUAL** (`.codex/docs/director-gates.md`)
   Pass: game concept elevator pitch, full pillar set with design tests, target platform (if known), any reference games or visual touchstones the user mentioned.
 
-Collect both verdicts, then present them together using a two-tab a direct user question:
+Collect both verdicts, then present them together using a two-tab a direct user prompt:
 - Tab **"Pillars"**: present creative-director feedback. Options mirror the standard CD-PILLARS handling — `Lock in as-is` / `Revise [specific pillar]` / `Discuss further`.
 - Tab **"Visual anchor"**: present the art-director's 2-3 named visual direction options. Options: each named direction (one per option) + `Combine elements across directions` + `Describe my own direction`.
 
@@ -244,12 +245,12 @@ who this game is actually for:
 
 Ground the concept in reality:
 
-- **Target platform**: Use a direct user question — "What platforms are you targeting for this game?"
+- **Target platform**: Use a direct user prompt — "What platforms are you targeting for this game?"
   Options: `PC (Steam / Epic)` / `Mobile (iOS / Android)` / `Console` / `Web / Browser` / `Multiple platforms`
   Record the answer — it directly shapes the engine recommendation and will be passed to `/setup-engine`.
   Note platform implications if relevant (e.g., mobile means Unity is strongly preferred; console means Godot has limitations; web means Godot exports cleanly).
 
-- **Engine experience**: Use a direct user question — "Do you already have an engine you work in?"
+- **Engine experience**: Use a direct user prompt — "Do you already have an engine you work in?"
   Options: `Godot` / `Unity` / `Unreal Engine 5` / `No preference — help me decide`
   - If they pick an engine → record it as their preference and move on. Do NOT second-guess it.
   - If "No preference" → tell them: "Run `/setup-engine` after this session — it will walk you through the full decision based on your concept and platform target." Do not make a recommendation here.
@@ -265,7 +266,7 @@ Ground the concept in reality:
 - `lean` → skip (not a PHASE-GATE). Note: "TD-FEASIBILITY skipped — Lean mode." Proceed directly to scope tier definition.
 - `full` → spawn as normal.
 
-**After identifying biggest technical risks, spawn `technical-director` via Codex multi-agent tools using gate TD-FEASIBILITY (`.claude/docs/director-gates.md`) before scope tiers are defined.**
+**After identifying biggest technical risks, spawn `technical-director` via `spawn_agent` using gate TD-FEASIBILITY (`.codex/docs/director-gates.md`) before scope tiers are defined.**
 
 Pass: core loop description, platform target, engine choice (or "undecided"), list of identified technical risks.
 
@@ -276,7 +277,7 @@ Present the assessment to the user. If HIGH RISK, offer to revisit scope before 
 - `lean` → skip (not a PHASE-GATE). Note: "PR-SCOPE skipped — Lean mode." Proceed to document generation.
 - `full` → spawn as normal.
 
-**After scope tiers are defined, spawn `producer` via Codex multi-agent tools using gate PR-SCOPE (`.claude/docs/director-gates.md`).**
+**After scope tiers are defined, spawn `producer` via `spawn_agent` using gate PR-SCOPE (`.codex/docs/director-gates.md`).**
 
 Pass: full vision scope, MVP definition, timeline estimate, team size.
 
@@ -285,7 +286,7 @@ Present the assessment to the user. If UNREALISTIC, offer to adjust the MVP defi
 ---
 
 4. **Generate the game concept document** using the template at
-   `.claude/docs/templates/game-concept.md`. Fill in ALL sections from the
+   `.codex/docs/templates/game-concept.md`. Fill in ALL sections from the
    brainstorm conversation, including the MDA analysis, player motivation
    profile, and flow state design sections.
 
@@ -298,17 +299,17 @@ Present the assessment to the user. If UNREALISTIC, offer to adjust the MVP defi
    This section is the seed of the art bible — it captures the "everything must
    move" decision before it can be forgotten between sessions.
 
-5. Use a direct user question for write approval:
+5. Use a direct user prompt for write approval:
 - Prompt: "Game concept is ready. May I write it to `design/gdd/game-concept.md`?"
 - Options: `[A] Yes — write it` / `[B] Not yet — revise a section first`
 
-If [B]: ask which section to revise using a direct user question with options: `Elevator Pitch` / `Core Fantasy & Unique Hook` / `Pillars` / `Core Loop` / `MVP Definition` / `Scope Tiers` / `Risks` / `Something else — I'll describe`
+If [B]: ask which section to revise using a direct user prompt with options: `Elevator Pitch` / `Core Fantasy & Unique Hook` / `Pillars` / `Core Loop` / `MVP Definition` / `Scope Tiers` / `Risks` / `Something else — I'll describe`
 
-After revising, show the updated section as a diff or clear before/after, then use a direct user question — "Ready to write the updated concept document?"
+After revising, show the updated section as a diff or clear before/after, then use a direct user prompt — "Ready to write the updated concept document?"
 Options: `[A] Yes — write it` / `[B] Revise another section`
 Repeat until the user selects [A].
 
-If yes, generate the document using the template at `.claude/docs/templates/game-concept.md`, fill in ALL sections from the brainstorm conversation, and write the file, creating directories as needed.
+If yes, generate the document using the template at `.codex/docs/templates/game-concept.md`, fill in ALL sections from the brainstorm conversation, and write the file, creating directories as needed.
 
 **Scope consistency rule**: The "Estimated Scope" field in the Core Identity table must match the full-vision timeline from the Scope Tiers section — not just say "Large (9+ months)". Write it as "Large (X–Y months, solo)" or "Large (X–Y months, team of N)" so the summary table is accurate.
 

@@ -3,14 +3,14 @@ name: smoke-check
 description: "Run the critical path smoke test gate before QA hand-off. Executes the automated test suite, verifies core functionality, and produces a PASS/FAIL report. Run after a sprint's stories are implemented and before manual QA begins. A failed smoke check means the build is not ready for QA."
 argument-hint: "[sprint | quick | --platform pc|console|mobile|all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # smoke-check
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/smoke-check/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Smoke Check
 
@@ -59,7 +59,7 @@ Before running anything, understand the environment:
 2. **CI check**: check whether `.github/workflows/` contains a workflow file
    referencing tests. Note in the report whether CI is configured.
 
-3. **Engine detection**: read `.claude/docs/technical-preferences.md` and
+3. **Engine detection**: read `.codex/docs/technical-preferences.md` and
    extract the `Engine:` value. Store this for test command selection in
    Phase 2.
 
@@ -112,7 +112,7 @@ If no matching log found: "UE automation tests must be run via the Session
 Frontend or CI pipeline. Please confirm test status manually."
 
 **Unknown engine / not configured:**
-"Engine not configured in `.claude/docs/technical-preferences.md`. Run
+"Engine not configured in `.codex/docs/technical-preferences.md`. Run
 `/setup-engine` to specify the engine, then re-run `/smoke-check`."
 
 **If the test runner is not available in this environment** (engine binary not
@@ -183,7 +183,7 @@ Tailor batches 2 and 3 to the actual systems identified from the sprint or QA
 plan. Replace bracketed placeholders with real mechanic names from the current
 sprint's stories.
 
-Use a direct user question to batch-verify. Keep to at most 3 calls.
+Use a direct user prompt to batch-verify. Keep to at most 3 calls.
 
 **Batch 1 — Core stability (always run):**
 ```
@@ -418,6 +418,6 @@ agent to begin manual verification."
   gaps for `/story-done` to follow up on.
 - **`quick` argument** skips Phase 3 (coverage scan) and Phase 4 Batch 3.
   Use it for rapid re-checks after fixing a specific failure.
-- Use a direct user question for all manual smoke check verification.
+- Use a direct user prompt for all manual smoke check verification.
 - **Never write the report without asking** — Phase 6 requires explicit
   approval before any file is created.

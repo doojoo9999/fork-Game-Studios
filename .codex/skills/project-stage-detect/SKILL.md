@@ -3,16 +3,16 @@ name: project-stage-detect
 description: "Automatically analyze project state, detect stage, identify gaps, and recommend next steps based on existing artifacts. Use when user asks 'where are we in development', 'what stage are we in', 'full project audit'."
 argument-hint: "[optional: role filter like 'programmer' or 'designer']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 model: haiku
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
 # project-stage-detect
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/project-stage-detect/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Project Stage Detection
 
@@ -91,7 +91,7 @@ auto-detect using these heuristics (check from most-advanced backward):
 
 ### 4. Generate Stage Report
 
-Use template: `.claude/docs/templates/project-stage-report.md`
+Use template: `.codex/docs/templates/project-stage-report.md`
 
 **Report structure**:
 ```markdown

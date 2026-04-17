@@ -13,6 +13,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CLAUDE_DIR = REPO_ROOT / ".claude"
 CODEX_DIR = REPO_ROOT / ".codex"
+CODEX_DOCS_DIR = CODEX_DIR / "docs"
+HOOKS_DIR = CODEX_DIR / "hooks"
 DOCS_DIR = REPO_ROOT / "docs" / "codex-port"
 PHASES_DIR = DOCS_DIR / "phases"
 TEMPLATES_DIR = DOCS_DIR / "templates"
@@ -217,6 +219,102 @@ def phase_label(skill_name: str, phase_map: dict[str, str]) -> str:
     return "auxiliary"
 
 
+def replace_whole_lines(text: str, replacements: dict[str, str]) -> str:
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
+
+
+def transform_port_text(text: str) -> str:
+    transformed = text.replace("Claude Code Game Studios", "Codex Game Studios")
+    transformed = transformed.replace("Claude Code", "Codex")
+    transformed = transformed.replace(".claude/docs/", ".codex/docs/")
+    transformed = transformed.replace(".claude/hooks/", ".codex/hooks/")
+    transformed = transformed.replace("`.claude/docs/**`", "`.codex/docs/**`")
+    transformed = transformed.replace("`CLAUDE.md`", "`AGENTS.md`")
+    transformed = transformed.replace("CLAUDE.md", "AGENTS.md")
+    transformed = transformed.replace("TodoWrite", "update_plan")
+    transformed = transformed.replace("`claude-haiku-4-5-20251001`", "`gpt-5.4-mini`")
+    transformed = transformed.replace("`claude-sonnet-4-6`", "`gpt-5.4`")
+    transformed = transformed.replace("`claude-opus-4-6`", "`gpt-5.4` with `xhigh` reasoning")
+
+    literal_replacements = {
+        "`AskUserQuestion`": "a direct user prompt",
+        "Use the `AskUserQuestion` tool": "Ask the user directly",
+        "Use `AskUserQuestion`": "Ask the user directly",
+        "via `AskUserQuestion`": "by asking the user directly",
+        "via AskUserQuestion": "by asking the user directly",
+        "Do not use `AskUserQuestion` here; output the guidance directly.": "Do not stop for a user decision here; output the guidance directly.",
+        "Do not use `AskUserQuestion` here;": "Do not stop for a user decision here;",
+        "Use the Task tool": "Use Codex multi-agent tools",
+        "Use the `Task` tool": "Use Codex multi-agent tools",
+        "`Task` tool": "Codex multi-agent tools",
+        "via Task": "via `spawn_agent`",
+        "via `Task`": "via `spawn_agent`",
+        "Task subagent": "spawned worker agent",
+        "Task calls": "worker-agent spawns",
+        "AskUserQuestion widget": "direct user prompt block",
+        "AskUserQuestion widgets": "direct user prompt blocks",
+        "assumptions AskUserQuestion widget": "assumptions direct user prompt block",
+        "## Parallel Task Protocol": "## Parallel Delegation Protocol",
+        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1": "separate Codex sessions or worktrees",
+        "Requires `separate Codex sessions or worktrees` environment variable.": "This maps to separate Codex sessions or worktrees in the Codex port; no special runtime flag is assumed here.",
+        "subagent_type:": "agent role:",
+    }
+    transformed = replace_whole_lines(transformed, literal_replacements)
+
+    regex_replacements: list[tuple[str, str]] = [
+        (r"\bAskUserQuestion\(", "Ask the user directly:\n"),
+        (r"\bCall `AskUserQuestion`", "Ask the user directly"),
+        (r"\bcall `AskUserQuestion`", "ask the user directly"),
+        (r"\bCall AskUserQuestion\b", "Ask the user directly"),
+        (r"\bcall AskUserQuestion\b", "ask the user directly"),
+        (r"\busing `AskUserQuestion`\b", "by asking the user directly"),
+        (r"\busing AskUserQuestion\b", "by asking the user directly"),
+        (r"\bUse `AskUserQuestion` for\b", "Ask the user directly for"),
+        (r"\buse `AskUserQuestion` for\b", "ask the user directly for"),
+        (r"\bUse AskUserQuestion for\b", "Ask the user directly for"),
+        (r"\buse AskUserQuestion for\b", "ask the user directly for"),
+        (r"\bUse `AskUserQuestion` with\b", "Ask the user directly with"),
+        (r"\buse `AskUserQuestion` with\b", "ask the user directly with"),
+        (r"\bUse AskUserQuestion with\b", "Ask the user directly with"),
+        (r"\buse AskUserQuestion with\b", "ask the user directly with"),
+        (r"\bAskUserQuestion widget\b", "direct user prompt block"),
+        (r"\bAskUserQuestion widgets\b", "direct user prompt blocks"),
+        (r"\bDo NOT put this in an AskUserQuestion\b", "Do NOT turn this into a preset-choice prompt"),
+        (r"\bDo not put this in an AskUserQuestion\b", "Do not turn this into a preset-choice prompt"),
+        (r"\b\*\*AskUserQuestion\*\* at every decision point\b", "**Ask the user directly** at every decision point"),
+        (r"\bspawn ([^`\n]+?) via Task\b", r"spawn \1 via `spawn_agent`"),
+        (r"\bSpawn ([^`\n]+?) via Task\b", r"Spawn \1 via `spawn_agent`"),
+        (r"\bspawned via Task\b", "spawned via `spawn_agent`"),
+        (r"\bspawned agents \(via Task\)\b", "spawned worker agents"),
+        (r"\bIf running as a Task subagent\b", "If running as a spawned worker agent"),
+        (r"\bIf running as a `Task` subagent\b", "If running as a spawned worker agent"),
+        (r"\bissue all ([^.\n]+?) Task calls\b", r"spawn all \1 worker agents"),
+        (r"\bIssue all Task calls simultaneously\b", "Spawn all worker agents simultaneously"),
+        (r"\bactual Task calls\b", "actual worker-agent spawns"),
+        (r"\bparallel Task\b", "parallel worker-agent"),
+        (r"spawn both worker-agent spawns simultaneously", "spawn both worker agents simultaneously"),
+        (r"Issue all independent worker-agent spawns", "Spawn all independent worker agents"),
+        (r"\bTask in this skill spawns a SUBAGENT\b", "This skill requires real worker-agent delegation"),
+        (r"\ba separate independent Claude session\b", "a separate independent Codex worker session"),
+        (r"\bvia Task using gate\b", "via `spawn_agent` using gate"),
+        (r"\bvia Task with\b", "via `spawn_agent` with"),
+        (r"\bvia the Task tool\b", "via `spawn_agent`"),
+        (r"\bvia `Task`\b", "via `spawn_agent`"),
+        (r"\bthe Task tool\b", "Codex multi-agent tools"),
+        (r"\bIf any spawned agent \(via Task\)\b", "If any spawned worker agent"),
+        (r"\bsub-agents spawned via Task\b", "worker agents spawned via `spawn_agent`"),
+        (r"\bdelegating via Task tool\b", "delegating via `spawn_agent`"),
+    ]
+    for pattern, replacement in regex_replacements:
+        transformed = re.sub(pattern, replacement, transformed)
+
+    transformed = re.sub(r"\bAskUserQuestion\b", "direct user prompt", transformed)
+
+    return transformed
+
+
 def body_with_port_note(kind: str, name: str, source_path: Path, body: str) -> str:
     source_rel = source_path.relative_to(REPO_ROOT)
     note = textwrap.dedent(
@@ -224,27 +322,13 @@ def body_with_port_note(kind: str, name: str, source_path: Path, body: str) -> s
         # {name}
 
         > Codex port note: This {kind} was ported mechanically from `{source_rel}`.
-        > When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-        > When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-        > References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+        > Interactive decision points use plain conversational prompts.
+        > Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+        > Supporting references resolve from `.codex/docs/**`.
 
         """
     )
-    transformed = body.replace("Claude Code", "Codex").replace(
-        "Claude Code Game Studios", "Codex Game Studios"
-    )
-    replacements = {
-        "`AskUserQuestion`": "a direct user question",
-        "AskUserQuestion": "a direct user question",
-        "Use the Task tool": "Use Codex multi-agent tools",
-        "`Task` tool": "Codex multi-agent tools",
-        "`Task`": "`spawn_agent` / `wait_agent`",
-        "via Task": "via Codex multi-agent tools",
-        "subagent_type:": "agent role:",
-        "TodoWrite": "update_plan",
-    }
-    for old, new in replacements.items():
-        transformed = transformed.replace(old, new)
+    transformed = transform_port_text(body)
     return note + transformed.rstrip() + "\n"
 
 
@@ -275,6 +359,7 @@ def build_project_config(agents: list[MdSource], skills: list[MdSource]) -> str:
         'plan_mode_reasoning_effort = "xhigh"',
         "",
         "[features]",
+        "codex_hooks = true",
         "multi_agent = true",
         "",
         "[agents]",
@@ -337,8 +422,10 @@ def build_master_plan(skills: list[MdSource], agents: list[MdSource]) -> str:
         ## Non-Negotiables
         - Never recreate role or skill behavior from memory when the source file exists
         - Keep `.claude` source assets untouched as a reference baseline
+        - Keep `.codex/docs/**` as the active supporting-doc surface for all Codex prompts and skills
         - Ask the user directly instead of relying on Claude-only interaction tools
         - Keep team orchestration on Codex multi-agent primitives instead of Claude `Task`
+        - Keep Codex hooks enabled for the hook events that current Codex supports
         """
     )
 
@@ -347,7 +434,7 @@ def build_source_manifest(skills: list[MdSource], agents: list[MdSource]) -> str
     rows = [
         [".claude/agents", str(len(agents)), ".codex/agents/configs + .codex/agents/prompts", "generated"],
         [".claude/skills", str(len(skills)), ".codex/skills", "generated"],
-        [".claude/docs", "shared reference", ".claude/docs (preserved)", "reference"],
+        [".claude/docs", "shared reference", ".codex/docs", "generated mirror"],
         ["CLAUDE.md", "1", "AGENTS.md + docs/codex-port", "translated"],
     ]
     return textwrap.dedent(
@@ -416,9 +503,9 @@ def build_skill_parity_matrix(skills: list[MdSource], phase_map: dict[str, str])
 def build_decision_log() -> str:
     entries = [
         "Preserve public role names and skill names from the Claude version unless a Codex name collision is discovered.",
-        "Treat `.claude/docs/**` as a live reference baseline during the first Codex port instead of bulk-moving every supporting document.",
-        "Replace Claude-only interaction primitives (`AskUserQuestion`, `Task`) with direct user questions and Codex multi-agent primitives.",
-        "Do not rely on `.claude/hooks/**` for parity because Codex hooks are still experimental; track equivalent control points in documentation and AGENTS instructions.",
+        "Generate `.codex/docs/**` as a transformed mirror of `.claude/docs/**` so Codex prompts and skills avoid Claude-only paths.",
+        "Replace Claude-only interaction primitives (`AskUserQuestion`, `Task`) with direct user prompts and Codex multi-agent primitives.",
+        "Enable repo-local Codex hooks with `.codex/hooks.json` for the hook events current Codex supports, and map unsupported Claude-only hook events to AGENTS rules plus active-context docs.",
     ]
     body = "\n".join(f"- {entry}" for entry in entries)
     return f"# Decision Log\n\n{body}\n"
@@ -428,23 +515,23 @@ def build_gap_register() -> str:
     rows = [
         [
             "interaction-tools",
-            "open",
-            "Source skills mention `AskUserQuestion`; Codex requires direct user prompts instead.",
+            "resolved",
+            "Generated Codex prompts and skills replace `AskUserQuestion` references with direct user prompts and plain conversational gating.",
         ],
         [
             "task-tool",
-            "open",
-            "Source team skills mention Claude `Task`; Codex port keeps this as a documented translation to `spawn_agent` / `wait_agent`.",
+            "resolved",
+            "Generated Codex prompts and skills replace Claude `Task` references with Codex multi-agent guidance centered on `spawn_agent`, `send_input`, `wait_agent`, and `close_agent`.",
         ],
         [
             "supporting-doc-paths",
-            "open",
-            "Codex skills currently reference `.claude/docs/**` as the preserved source baseline rather than `.codex/docs/**` mirrors.",
+            "resolved",
+            "The port now generates `.codex/docs/**` mirrors from `.claude/docs/**` and rewrites Codex-facing references to the mirrored paths.",
         ],
         [
             "hooks-parity",
-            "open",
-            "Claude hook behavior is documented but not enforced through Codex runtime hooks in v1.",
+            "translated",
+            "Repo-local Codex hooks are enabled for supported events (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop`); unsupported Claude-only hook events remain documented as intentional runtime differences rather than open gaps.",
         ],
     ]
     return "# Gap Register\n\n" + markdown_table(["Gap", "State", "Details"], rows) + "\n"
@@ -455,14 +542,16 @@ def build_active_context() -> str:
         """\
         # Active Context
 
-        - Current wave: Foundation bootstrap completed, parity assets generated from source
+        - Current wave: Codex-native parity surface regenerated from source
         - Next work:
-          - verify `.codex/config.toml` loads cleanly
-          - spot-check representative role prompts and skill ports
-          - iterate on open items in `05-gap-register.md`
+          - commit the Codex-native parity updates
+          - push the verified port state
         - Stop conditions:
           - if a generated file no longer matches its source baseline, regenerate before editing by hand
           - if a source-side change is needed for parity, record it in `04-decision-log.md` first
+        - Verification status:
+          - `.codex/config.toml` and `.codex/hooks.json` parse cleanly
+          - representative `codex exec` runs completed for `/help`, `/project-stage-detect`, and `/team-ui`
         """
     )
 
@@ -554,7 +643,7 @@ def build_phase_docs(skills: list[MdSource], phase_map: dict[str, str]) -> dict[
             ## Acceptance Criteria
             - Source file exists for every generated Codex artifact in this wave
             - Public skill names remain stable
-            - Any known deviations are recorded in `../04-decision-log.md` or `../05-gap-register.md`
+            - Any known runtime differences are recorded in `../04-decision-log.md`
             """
         )
         phase_docs[filename] = body
@@ -570,7 +659,7 @@ def build_agent_template() -> str:
         - Tier, engine scope, and source model recorded
         - Codex role config generated
         - Codex prompt generated with port note
-        - Any Claude-only tool references translated or logged
+        - Any Claude-only tool references translated
         - Parity matrix row updated
         """
     )
@@ -584,8 +673,8 @@ def build_skill_template() -> str:
         - Source file reviewed directly from `.claude/skills/**/SKILL.md`
         - Workflow phase recorded
         - Codex skill directory generated
-        - Any `AskUserQuestion` usage replaced with direct user prompts or logged
-        - Any `Task` usage replaced with Codex multi-agent guidance or logged
+        - Any `AskUserQuestion` usage replaced with direct user prompts
+        - Any `Task` usage replaced with Codex multi-agent guidance
         - Parity matrix row updated
         """
     )
@@ -615,7 +704,7 @@ def copy_skill_tree(skill: MdSource) -> None:
                 frontmatter = original_text[: match.end()]
                 frontmatter = re.sub(
                     r"^allowed-tools:.*$",
-                    "allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan",
+                    "allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan",
                     frontmatter,
                     flags=re.MULTILINE,
                 )
@@ -623,6 +712,297 @@ def copy_skill_tree(skill: MdSource) -> None:
             skill_file,
             frontmatter + body_with_port_note("skill", skill.name, skill.source_path, skill.body),
         )
+
+
+def create_doc_mirror() -> None:
+    ensure_dir(CODEX_DOCS_DIR)
+    for source_path in sorted((CLAUDE_DIR / "docs").rglob("*")):
+        if source_path.is_dir():
+            continue
+        target_path = CODEX_DOCS_DIR / source_path.relative_to(CLAUDE_DIR / "docs")
+        transformed = transform_port_text(source_path.read_text(encoding="utf-8"))
+        write_text(target_path, transformed)
+
+
+def build_pre_tool_use_hook() -> str:
+    return textwrap.dedent(
+        """\
+        #!/usr/bin/env python3
+        import json
+        import re
+        import sys
+        from pathlib import Path
+
+
+        def emit(payload):
+            json.dump(payload, sys.stdout)
+
+
+        payload = json.load(sys.stdin)
+        command = payload.get("tool_input", {}).get("command", "")
+        blocked = {
+            r"\\brm\\s+-rf\\b": "Destructive `rm -rf` command blocked by Codex hook.",
+            r"\\bgit\\s+push\\s+.*(?:--force|-f)\\b": "Force-push blocked by Codex hook.",
+            r"\\bgit\\s+reset\\s+--hard\\b": "Hard reset blocked by Codex hook.",
+            r"\\bgit\\s+clean\\s+-f\\b": "Git clean blocked by Codex hook.",
+            r"\\bsudo\\b": "Elevated shell command blocked by Codex hook.",
+            r"\\bchmod\\s+777\\b": "Over-broad chmod blocked by Codex hook.",
+            r"\\b(?:cat|type)\\s+[^\\n]*\\.env(?:\\.[^\\s]+)?\\b": "Reading `.env` files through Bash is blocked by Codex hook.",
+        }
+        for pattern, reason in blocked.items():
+            if re.search(pattern, command):
+                emit(
+                    {
+                        "hookSpecificOutput": {
+                            "hookEventName": "PreToolUse",
+                            "permissionDecision": "deny",
+                            "permissionDecisionReason": reason,
+                        }
+                    }
+                )
+                raise SystemExit(0)
+
+        if re.search(r"\\bgit\\s+push\\b", command) and re.search(r"\\b(?:main|develop)\\b", command):
+            emit({"systemMessage": "Protected branch push detected. Re-check branch target before continuing."})
+            raise SystemExit(0)
+
+        repo_root = Path(payload.get("cwd", "."))
+        tracked_paths = [".codex/skills/", ".codex/agents/", ".codex/hooks/"]
+        if re.search(r"\\bgit\\s+commit\\b", command):
+            changed = []
+            try:
+                import subprocess
+
+                result = subprocess.run(
+                    ["git", "diff", "--cached", "--name-only"],
+                    cwd=repo_root,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                changed = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+            except Exception:
+                changed = []
+            if any(any(marker in path for marker in tracked_paths) for path in changed):
+                emit({"systemMessage": "Codex role/skill/hook changes are staged. Manual `codex exec` verification is required before finishing."})
+        """
+    )
+
+
+def build_session_start_hook() -> str:
+    return textwrap.dedent(
+        """\
+        #!/usr/bin/env python3
+        import json
+        import subprocess
+        import sys
+        from pathlib import Path
+
+
+        def safe_read(path: Path) -> str:
+            if not path.exists():
+                return ""
+            return path.read_text(encoding="utf-8").strip()
+
+
+        payload = json.load(sys.stdin)
+        cwd = Path(payload.get("cwd", "."))
+        try:
+            repo_root = Path(
+                subprocess.check_output(
+                    ["git", "rev-parse", "--show-toplevel"],
+                    cwd=cwd,
+                    text=True,
+                ).strip()
+            )
+        except Exception:
+            repo_root = cwd
+
+        lines = []
+        active_context = repo_root / "docs" / "codex-port" / "06-active-context.md"
+        context_text = safe_read(active_context)
+        if context_text:
+            lines.append("Active Codex port context:")
+            lines.extend(context_text.splitlines()[:8])
+
+        tech_prefs = repo_root / ".codex" / "docs" / "technical-preferences.md"
+        prefs_text = safe_read(tech_prefs)
+        for line in prefs_text.splitlines():
+            if line.startswith("- **Engine**:") or line.startswith("- **Primary Input**:"):
+                lines.append(line)
+
+        if not (repo_root / "design" / "gdd" / "game-concept.md").exists():
+            lines.append("Project concept doc is missing. `/start` or `/brainstorm` is usually the right next step.")
+
+        payload = {
+            "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "additionalContext": "\\n".join(line for line in lines if line).strip(),
+            }
+        }
+        json.dump(payload, sys.stdout)
+        """
+    )
+
+
+def build_user_prompt_submit_hook() -> str:
+    return textwrap.dedent(
+        """\
+        #!/usr/bin/env python3
+        import json
+        import sys
+
+
+        payload = json.load(sys.stdin)
+        prompt = payload.get("prompt", "")
+        additions = []
+        if "AskUserQuestion" in prompt:
+            additions.append("Interpret `AskUserQuestion` requests as direct conversational prompts to the user with concise options.")
+        if " Task " in f" {prompt} " or "`Task`" in prompt:
+            additions.append("Interpret Claude `Task` references as Codex worker delegation using `spawn_agent`, `send_input`, `wait_agent`, and `close_agent`.")
+        if ".claude/docs/" in prompt:
+            additions.append("Prefer `.codex/docs/**` mirrors over `.claude/docs/**` when both exist.")
+        if not additions:
+            raise SystemExit(0)
+        json.dump(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "UserPromptSubmit",
+                    "additionalContext": "\\n".join(additions),
+                }
+            },
+            sys.stdout,
+        )
+        """
+    )
+
+
+def build_stop_hook() -> str:
+    return textwrap.dedent(
+        """\
+        #!/usr/bin/env python3
+        import json
+        import os
+        import subprocess
+        import sys
+        from pathlib import Path
+
+
+        payload = json.load(sys.stdin)
+        if os.environ.get("CODEX_SKIP_STOP_VERIFY") == "1":
+            raise SystemExit(0)
+        if payload.get("stop_hook_active"):
+            raise SystemExit(0)
+
+        cwd = Path(payload.get("cwd", "."))
+        try:
+            repo_root = Path(
+                subprocess.check_output(
+                    ["git", "rev-parse", "--show-toplevel"],
+                    cwd=cwd,
+                    text=True,
+                ).strip()
+            )
+        except Exception:
+            repo_root = cwd
+
+        try:
+            result = subprocess.run(
+                ["git", "status", "--short"],
+                cwd=repo_root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            changed = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        except Exception:
+            changed = []
+
+        needs_verification = any(
+            ".codex/skills/" in line or ".codex/agents/" in line or ".codex/hooks" in line
+            for line in changed
+        )
+        last_message = (payload.get("last_assistant_message") or "").lower()
+        if needs_verification and "manual verification" not in last_message:
+            json.dump(
+                {
+                    "decision": "block",
+                    "reason": "Manual verification is required after `.codex/skills`, `.codex/agents`, or `.codex/hooks` changes. Run representative `codex exec` checks before finishing.",
+                },
+                sys.stdout,
+            )
+        """
+    )
+
+
+def create_hooks() -> None:
+    ensure_dir(HOOKS_DIR)
+    hook_files = {
+        "session_start.py": build_session_start_hook(),
+        "pre_tool_use.py": build_pre_tool_use_hook(),
+        "user_prompt_submit.py": build_user_prompt_submit_hook(),
+        "stop_require_verification.py": build_stop_hook(),
+    }
+    for name, content in hook_files.items():
+        path = HOOKS_DIR / name
+        write_text(path, content)
+        path.chmod(0o755)
+
+    hooks_json = {
+        "hooks": {
+            "SessionStart": [
+                {
+                    "matcher": "startup|resume",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/session_start.py"',
+                            "statusMessage": "Loading Codex studio context",
+                            "timeout": 10,
+                        }
+                    ],
+                }
+            ],
+            "UserPromptSubmit": [
+                {
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/user_prompt_submit.py"',
+                            "statusMessage": "Normalizing Codex studio terminology",
+                            "timeout": 10,
+                        }
+                    ]
+                }
+            ],
+            "PreToolUse": [
+                {
+                    "matcher": "Bash",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use.py"',
+                            "statusMessage": "Checking Bash command",
+                            "timeout": 10,
+                        }
+                    ],
+                }
+            ],
+            "Stop": [
+                {
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/stop_require_verification.py"',
+                            "statusMessage": "Checking Codex verification requirements",
+                            "timeout": 10,
+                        }
+                    ]
+                }
+            ],
+        }
+    }
+    write_text(CODEX_DIR / "hooks.json", json.dumps(hooks_json, indent=2))
 
 
 def create_agents(agents: list[MdSource]) -> None:
@@ -706,6 +1086,8 @@ def main() -> None:
 
     ensure_dir(CODEX_DIR)
     ensure_dir(SKILLS_DIR)
+    create_doc_mirror()
+    create_hooks()
     create_agents(agents)
     for skill in skills:
         copy_skill_tree(skill)

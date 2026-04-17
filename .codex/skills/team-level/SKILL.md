@@ -3,18 +3,18 @@ name: team-level
 description: "Orchestrate level design team: level-designer + narrative-director + world-builder + art-director + systems-designer + qa-tester for complete area/level creation."
 argument-hint: "[level name or area to design]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # team-level
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/team-level/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 When this skill is invoked:
 
-**Decision Points:** At each step transition, use a direct user question to present
+**Decision Points:** At each step transition, use a direct user prompt to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next step.
@@ -46,7 +46,7 @@ Always provide full context in each agent's prompt (game concept, pillars, exist
 
 ### Step 1: Narrative + Visual Direction (narrative-director + world-builder + art-director, parallel)
 
-Spawn all three agents simultaneously — issue all three Task calls before waiting for any result.
+Spawn all three agents simultaneously — issue all three worker-agent spawns before waiting for any result.
 
 Spawn the `narrative-director` agent to:
 - Define the narrative purpose of this area (what story beats happen here?)
@@ -67,7 +67,7 @@ Spawn the `art-director` agent to:
 
 **The art-director's visual targets from Step 1 must be passed to the level-designer in Step 2** as explicit constraints. Layout decisions happen within the visual direction, not before it.
 
-**Gate**: Use a direct user question to present all three Step 1 outputs (narrative brief, lore foundation, visual direction targets) and confirm before proceeding to Step 2.
+**Gate**: Use a direct user prompt to present all three Step 1 outputs (narrative brief, lore foundation, visual direction targets) and confirm before proceeding to Step 2.
 
 ### Step 2: Layout and Encounter Design (level-designer)
 Spawn the `level-designer` agent with the full Step 1 output as context:
@@ -86,13 +86,13 @@ The level-designer should:
 **Adjacent area dependency check**: After the layout is produced, check `design/levels/` for each adjacent area referenced by the level-designer. If any referenced area's `.md` file does not exist, surface the gap:
 > "Level references [area-name] as an adjacent area but `design/levels/[area-name].md` does not exist."
 
-Use a direct user question with options:
+Use a direct user prompt with options:
 - (a) Proceed with a placeholder reference — mark the connection as UNRESOLVED in the level doc and list it in the open cross-level dependencies section of the summary report
 - (b) Pause and run `/team-level [area-name]` first to establish that area
 
 Do NOT invent content for the missing adjacent area.
 
-**Gate**: Use a direct user question to present Step 2 layout (including any unresolved adjacent area dependencies) and confirm before proceeding to Step 3.
+**Gate**: Use a direct user prompt to present Step 2 layout (including any unresolved adjacent area dependencies) and confirm before proceeding to Step 3.
 
 ### Step 3: Systems Integration (systems-designer)
 Spawn the `systems-designer` agent to:
@@ -102,7 +102,7 @@ Spawn the `systems-designer` agent to:
 - Design any area-specific mechanics or environmental hazards
 - Specify resource distribution (health pickups, save points, shops)
 
-**Gate**: Use a direct user question to present Step 3 outputs and confirm before proceeding to Step 4.
+**Gate**: Use a direct user prompt to present Step 3 outputs and confirm before proceeding to Step 4.
 
 ### Step 4: Production Concepts + Accessibility (art-director + accessibility-specialist, parallel)
 
@@ -124,7 +124,7 @@ Spawn the `accessibility-specialist` agent in parallel to:
 
 Wait for both agents to return before proceeding.
 
-**Gate**: Use a direct user question to present both Step 4 results. If the accessibility-specialist returned any BLOCKING concerns, highlight them prominently and offer:
+**Gate**: Use a direct user prompt to present both Step 4 results. If the accessibility-specialist returned any BLOCKING concerns, highlight them prominently and offer:
 - (a) Return to level-designer and art-director to redesign the flagged elements before Step 5
 - (b) Document as a known accessibility gap and proceed to Step 5 with the concern explicitly logged in the final report
 
@@ -150,7 +150,7 @@ Spawn the `qa-tester` agent to:
 ## File Write Protocol
 
 All file writes (level design docs, narrative docs, test checklists) are delegated
-to sub-agents spawned via Codex multi-agent tools. Each sub-agent enforces the "May I write to [path]?"
+to sub-agents spawned via `spawn_agent`. Each sub-agent enforces the "May I write to [path]?"
 protocol. This orchestrator does not write files directly.
 
 Verdict: **COMPLETE** — level design document produced and all team outputs compiled.
@@ -164,11 +164,11 @@ Verdict: **BLOCKED** — one or more agents blocked; partial report produced wit
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Codex multi-agent tools) returns BLOCKED, errors, or cannot complete:
+If any spawned agent (via `spawn_agent`) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via a direct user question with choices:
+3. **Offer options** by asking the user directly with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first

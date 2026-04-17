@@ -3,16 +3,16 @@ name: patch-notes
 description: "Generate player-facing patch notes from git history, sprint data, and internal changelogs. Translates developer language into clear, engaging player communication."
 argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 model: haiku
 agent: community-manager
 ---
 # patch-notes
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/patch-notes/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 1: Parse Arguments
 
@@ -46,7 +46,7 @@ Verdict: **BLOCKED** — stop here without generating notes.
 
 **Tone guide detection** — before drafting notes, check for writing style guidance:
 
-1. Check `.claude/docs/technical-preferences.md` for any "tone", "voice", or "style"
+1. Check `.codex/docs/technical-preferences.md` for any "tone", "voice", or "style"
    fields or sections.
 2. Check `docs/PATCH-NOTES-STYLE.md` if it exists.
 3. Check `design/community/tone-guide.md` if it exists.
@@ -58,7 +58,7 @@ Verdict: **BLOCKED** — stop here without generating notes.
 
 **Template detection** — check whether a patch notes template exists:
 
-1. Glob for `docs/patch-notes-template.md` and `.claude/docs/templates/patch-notes-template.md`.
+1. Glob for `docs/patch-notes-template.md` and `.codex/docs/templates/patch-notes-template.md`.
 2. If found at either location, read it and use it as the output structure for Phase 4
    instead of the built-in style templates (Brief / Detailed / Full). Fill in the
    template's sections with the categorized data.

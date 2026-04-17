@@ -3,15 +3,15 @@ name: security-audit
 description: "Audit the game for security vulnerabilities: save tampering, cheat vectors, network exploits, data exposure, and input validation gaps. Produces a prioritised security report with remediation guidance. Run before any public release or multiplayer launch."
 argument-hint: "[full | network | save | input | quick]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: security-engineer
 ---
 # security-audit
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/security-audit/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Security Audit
 
@@ -41,7 +41,7 @@ remediation plan.
 - `quick` — high-severity checks only (fastest, for iterative use)
 - No argument — run `full`
 
-Read `.claude/docs/technical-preferences.md` to determine:
+Read `.codex/docs/technical-preferences.md` to determine:
 - Engine and language (affects which patterns to search for)
 - Target platforms (affects which attack surfaces apply)
 - Whether multiplayer/networking is in scope
@@ -50,7 +50,7 @@ Read `.claude/docs/technical-preferences.md` to determine:
 
 ## Phase 2: Spawn Security Engineer
 
-Spawn `security-engineer` via Codex multi-agent tools. Pass:
+Spawn `security-engineer` via `spawn_agent`. Pass:
 - The audit scope/mode
 - Engine and language from technical preferences
 - A manifest of all source directories: `src/`, `assets/data/`, any config files

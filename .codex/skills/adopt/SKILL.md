@@ -3,15 +3,15 @@ name: adopt
 description: "Brownfield onboarding — audits existing project artifacts for template format compliance (not just existence), classifies gaps by impact, and produces a numbered migration plan. Run this when joining an in-progress project or upgrading from an older template version. Distinct from /project-stage-detect (which checks what exists) — this checks whether what exists will actually work with the template's skills."
 argument-hint: "[focus: full | gdds | adrs | stories | infra]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: technical-director
 ---
 # adopt
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/adopt/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Adopt — Brownfield Template Adoption
 
@@ -54,7 +54,7 @@ Then read silently before presenting anything else.
 - Count GDD files: `design/gdd/*.md` (excluding game-concept.md and systems-index.md)
 - Count ADR files: `docs/architecture/adr-*.md`
 - Count story files: `production/epics/**/*.md` (excluding EPIC.md)
-- `.claude/docs/technical-preferences.md` — engine configured?
+- `.codex/docs/technical-preferences.md` — engine configured?
 - `docs/engine-reference/` — engine reference docs present?
 - Glob `docs/adoption-plan-*.md` — note the filename of the most recent prior plan if any exist
 
@@ -67,7 +67,7 @@ Use the same heuristic as `/project-stage-detect`:
 - game-concept.md exists → Concept
 - Nothing → Fresh (not a brownfield project — suggest `/start`)
 
-If the project appears fresh (no artifacts at all), use a direct user question:
+If the project appears fresh (no artifacts at all), use a direct user prompt:
 - "This looks like a fresh project — no existing artifacts found. `/adopt` is for
   projects with work to migrate. What would you like to do?"
   - "Run `/start` — begin guided first-time onboarding"
@@ -165,7 +165,7 @@ For each story file found:
 
 ### 2f: Technical Preferences Audit
 
-Read `.claude/docs/technical-preferences.md`. Check each field for `[TO BE CONFIGURED]`:
+Read `.codex/docs/technical-preferences.md`. Check each field for `[TO BE CONFIGURED]`:
 - Engine, Language, Rendering, Physics → HIGH if unconfigured (ADR skills fail)
 - Naming conventions → MEDIUM
 - Performance budgets → MEDIUM
@@ -274,7 +274,7 @@ If a prior adoption plan was detected in Phase 1, add a note:
 > "A previous plan exists at `docs/adoption-plan-[prior-date].md`. The new plan will
 > reflect current project state — it does not diff against the prior run."
 
-Use a direct user question:
+Use a direct user prompt:
 - "Ready to write the migration plan?"
   - "Yes — write `docs/adoption-plan-[date].md`"
   - "Show me the full plan preview first (don't write yet)"
@@ -375,7 +375,7 @@ After writing the adoption plan (or if the user cancels writing), check whether
 
 **If it exists**: Read it and note the current mode — "Review mode is already set to `[current]`." — skip the prompt.
 
-**If it does not exist**: Use a direct user question:
+**If it does not exist**: Use a direct user prompt:
 
 - **Prompt**: "One more setup step: how much design review would you like as you work through the workflow?"
 - **Options**:
@@ -395,11 +395,11 @@ Create the `production/` directory if it does not exist.
 ## Phase 7: Offer First Action
 
 After writing the plan, don't stop there. Pick the single highest-priority gap
-and offer to handle it immediately using a direct user question. Choose the first
+and offer to handle it immediately using a direct user prompt. Choose the first
 branch that applies:
 
 **If there are parenthetical status values in systems-index.md:**
-Use a direct user question:
+Use a direct user prompt:
 - "The most urgent fix is `systems-index.md` — [N] rows have parenthetical status
   values (e.g. `Needs Revision (see notes)`) that break /gate-check,
   /create-stories, and /architecture-review right now. I can fix these in-place."
@@ -408,7 +408,7 @@ Use a direct user question:
   - "Done — leave me with the plan"
 
 **If ADRs are missing `## Status` (and no parenthetical issue):**
-Use a direct user question:
+Use a direct user prompt:
 - "The most urgent fix is adding `## Status` to [N] ADR(s): [list filenames].
   Without it, /story-readiness silently passes all ADR checks. Start with
   [first affected filename]?"
@@ -417,7 +417,7 @@ Use a direct user question:
   - "I'll handle ADRs myself"
 
 **If GDDs are missing Acceptance Criteria (and no blocking issues above):**
-Use a direct user question:
+Use a direct user prompt:
 - "The most urgent gap is missing Acceptance Criteria in [N] GDD(s):
   [list filenames]. Without them, /create-stories can't generate stories.
   Start with [highest-priority GDD filename]?"
@@ -426,7 +426,7 @@ Use a direct user question:
   - "I'll handle GDDs myself"
 
 **If no BLOCKING or HIGH gaps exist:**
-Use a direct user question:
+Use a direct user prompt:
 - "No blocking gaps — this project is template-compatible. What next?"
   - "Walk me through the medium-priority improvements"
   - "Run /project-stage-detect for a broader health check"

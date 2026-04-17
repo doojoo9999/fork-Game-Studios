@@ -3,15 +3,15 @@ name: story-readiness
 description: "Validate that a story file is implementation-ready. Checks for embedded GDD requirements, ADR references, engine notes, clear acceptance criteria, and no open design questions. Produces READY / NEEDS WORK / BLOCKED verdict with specific gaps. Use when user says 'is this story ready', 'can I start on this story', 'is story X ready to implement'."
 argument-hint: "[story-file-path or 'all' or 'sprint']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 model: haiku
 ---
 # story-readiness
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/story-readiness/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Story Readiness
 
@@ -35,13 +35,13 @@ Resolve the review mode once at startup (store for all gate spawns this run):
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `.claude/docs/director-gates.md` for the full check pattern and mode definitions.
+See `.codex/docs/director-gates.md` for the full check pattern and mode definitions.
 
 ---
 
 ## 1. Parse Arguments
 
-**Scope:** `$ARGUMENTS[0]` (blank = ask user via a direct user question)
+**Scope:** `$ARGUMENTS[0]` (blank = ask user by asking the user directly)
 
 - **Specific path** (e.g., `/story-readiness production/epics/combat/story-001-basic-attack.md`):
   validate that single story file.
@@ -51,7 +51,7 @@ See `.claude/docs/director-gates.md` for the full check pattern and mode definit
   validate every story file found.
 - **No argument**: ask the user which scope to validate.
 
-If no argument is given, use a direct user question:
+If no argument is given, use a direct user prompt:
 - "What would you like to validate?"
   - Options: "A specific story file", "All stories in the current sprint",
     "All stories in production/epics/", "Stories for a specific epic"
@@ -331,7 +331,7 @@ Apply the review mode resolved in Phase 0 before spawning QL-STORY-READY:
 - `lean` → skip. Note: "QL-STORY-READY skipped — Lean mode." Proceed to close.
 - `full` → spawn as normal.
 
-Spawn `qa-lead` via Codex multi-agent tools using gate **QL-STORY-READY** (`.claude/docs/director-gates.md`).
+Spawn `qa-lead` via `spawn_agent` using gate **QL-STORY-READY** (`.codex/docs/director-gates.md`).
 
 Pass the following context:
 - Story title
@@ -341,7 +341,7 @@ Pass the following context:
 
 Handle the verdict per standard rules in `director-gates.md`:
 - **ADEQUATE** → story is cleared. Proceed to close.
-- **GAPS [list]** → surface the specific gaps to the user via a direct user question:
+- **GAPS [list]** → surface the specific gaps to the user via a direct user prompt:
   options: `Update story with suggested gaps` / `Accept and proceed anyway` / `Discuss further`.
 - **INADEQUATE** → surface the specific gaps; ask user whether to update the story or proceed anyway.
 

@@ -4,14 +4,14 @@ description: "Structured performance profiling workflow. Identifies bottlenecks,
 argument-hint: "[system-name or 'full']"
 user-invocable: true
 agent: performance-analyst
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # perf-profile
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/perf-profile/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 1: Determine Scope
 
@@ -24,7 +24,7 @@ Read the argument:
 
 ## Phase 2: Load Performance Budgets
 
-Check for existing performance targets in design docs or CLAUDE.md:
+Check for existing performance targets in design docs or AGENTS.md:
 
 - Target FPS (e.g., 60fps = 16.67ms frame budget)
 - Memory budget (total and per-system)

@@ -3,16 +3,16 @@ name: retrospective
 description: "Generates a sprint or milestone retrospective by analyzing completed work, velocity, blockers, and patterns. Produces actionable insights for the next iteration."
 argument-hint: "[sprint-N|milestone-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 context: |
   !git log --oneline --since="2 weeks ago" 2>/dev/null
 ---
 # retrospective
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/retrospective/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 1: Parse Arguments
 
@@ -54,7 +54,7 @@ Read the sprint or milestone plan from the appropriate location:
 > "No sprint data found for [sprint/milestone]. Run `/sprint-status` to generate
 > sprint data first, or provide the sprint details manually."
 
-Then use a direct user question to present two options:
+Then use a direct user prompt to present two options:
 
 - **[A] Provide data manually** — ask the user to paste or describe the sprint
   tasks, dates, and outcomes; use that as the source of truth for the retrospective.

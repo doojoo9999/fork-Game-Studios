@@ -3,15 +3,15 @@ name: propagate-design-change
 description: "When a GDD is revised, scans all ADRs and the traceability index to identify which architectural decisions are now potentially stale. Produces a change impact report and guides the user through resolution."
 argument-hint: "[path/to/changed-gdd.md]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: technical-director
 ---
 # propagate-design-change
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/propagate-design-change/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Propagate Design Change
 
@@ -158,7 +158,7 @@ ADRs referencing this GDD: [M]
 - `lean` → skip. Note: "TD-CHANGE-IMPACT skipped — Lean mode." Proceed to Phase 7.
 - `full` → spawn as normal.
 
-Spawn `technical-director` via Codex multi-agent tools using gate **TD-CHANGE-IMPACT** (`.claude/docs/director-gates.md`).
+Spawn `technical-director` via `spawn_agent` using gate **TD-CHANGE-IMPACT** (`.codex/docs/director-gates.md`).
 
 Pass: the full Design Change Impact Report from Phase 6 (change summary, all affected ADRs with their Still Valid / Needs Review / Likely Superseded classifications, and recommended actions).
 
@@ -169,7 +169,7 @@ The technical-director reviews whether:
 
 Apply the verdict:
 - **APPROVE** → proceed to Phase 7 resolution workflow
-- **CONCERNS** → surface the specific ADRs or recommendations flagged; use a direct user question with options: `Revise the impact assessment` / `Accept with noted concerns` / `Discuss further`
+- **CONCERNS** → surface the specific ADRs or recommendations flagged; use a direct user prompt with options: `Revise the impact assessment` / `Accept with noted concerns` / `Discuss further`
 - **REJECT** → do not proceed to resolution; re-analyze the impact before continuing
 
 ---

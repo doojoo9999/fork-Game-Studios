@@ -4,6 +4,7 @@ personality = "pragmatic"
 plan_mode_reasoning_effort = "xhigh"
 
 [features]
+codex_hooks = true
 multi_agent = true
 
 [agents]

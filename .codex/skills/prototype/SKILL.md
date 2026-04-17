@@ -3,16 +3,16 @@ name: prototype
 description: "Rapid prototyping workflow. Skips normal standards to quickly validate a game concept or mechanic. Produces throwaway code and a structured prototype report."
 argument-hint: "[concept-description] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: prototyper
 isolation: worktree
 ---
 # prototype
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/prototype/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 1: Define the Question
 
@@ -21,7 +21,7 @@ Resolve the review mode (once, store for all gate spawns this run):
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `.claude/docs/director-gates.md` for the full check pattern.
+See `.codex/docs/director-gates.md` for the full check pattern.
 
 Read the concept description from the argument. Identify the core question this prototype must answer. If the concept is vague, state the question explicitly before proceeding — a prototype without a clear question wastes time.
 
@@ -29,7 +29,7 @@ Read the concept description from the argument. Identify the core question this 
 
 ## Phase 2: Load Project Context
 
-Read `CLAUDE.md` for project context and the current tech stack. Understand what engine, language, and frameworks are in use so the prototype is built with compatible tooling.
+Read `AGENTS.md` for project context and the current tech stack. Understand what engine, language, and frameworks are in use so the prototype is built with compatible tooling.
 
 ---
 
@@ -127,7 +127,7 @@ If yes, write the file.
 - `lean` → skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped — Lean mode." Proceed to Phase 7 summary with the prototyper's recommendation as the final verdict.
 - `full` → spawn as normal.
 
-Spawn `creative-director` via Codex multi-agent tools using gate **CD-PLAYTEST** (`.claude/docs/director-gates.md`).
+Spawn `creative-director` via `spawn_agent` using gate **CD-PLAYTEST** (`.codex/docs/director-gates.md`).
 
 Pass: the full REPORT.md content, the original design question, game pillars and core fantasy from `design/gdd/game-concept.md` (if it exists).
 

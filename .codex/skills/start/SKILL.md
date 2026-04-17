@@ -3,14 +3,14 @@ name: start
 description: "First-time onboarding — asks where you are, then guides you to the right workflow. No assumptions."
 argument-hint: "[no arguments]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # start
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/start/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Guided Onboarding
 
@@ -25,7 +25,7 @@ This skill is the entry point for new users. It does NOT assume you have a game 
 Before asking anything, silently gather context so you can tailor your guidance. Do NOT show these results unprompted — they inform your recommendations, not the conversation opener.
 
 Check:
-- **Engine configured?** Read `.claude/docs/technical-preferences.md`. If the Engine field contains `[TO BE CONFIGURED]`, the engine is not set.
+- **Engine configured?** Read `.codex/docs/technical-preferences.md`. If the Engine field contains `[TO BE CONFIGURED]`, the engine is not set.
 - **Game concept exists?** Check for `design/gdd/game-concept.md`.
 - **Source code exists?** Glob for source files in `src/` (`*.gd`, `*.cs`, `*.cpp`, `*.h`, `*.rs`, `*.py`, `*.js`, `*.ts`).
 - **Prototypes exist?** Check for subdirectories in `prototypes/`.
@@ -38,7 +38,7 @@ Store these findings internally to validate the user's self-assessment and tailo
 
 ## Phase 2: Ask Where the User Is
 
-This is the first thing the user sees. Use a direct user question with these exact options so the user can click rather than type:
+This is the first thing the user sees. Use a direct user prompt with these exact options so the user can click rather than type:
 
 - **Prompt**: "Welcome to Codex Game Studios! Before I suggest anything, I'd like to understand where you're starting from. Where are you at with your game idea right now?"
 - **Options**:
@@ -113,8 +113,8 @@ The user needs creative exploration before anything else.
 
 #### If C: Clear concept
 
-1. Ask them to describe their concept in one sentence — genre and core mechanic. Use plain text, not a direct user question (it's an open response).
-2. Acknowledge the concept, then use a direct user question to offer two paths:
+1. Ask them to describe their concept in one sentence — genre and core mechanic. Use plain text, not direct user prompt (it's an open response).
+2. Acknowledge the concept, then use a direct user prompt to offer two paths:
    - **Prompt**: "How would you like to proceed?"
    - **Options**:
      - `Formalize it first` — Run `/brainstorm [concept]` to structure it into a proper game concept document
@@ -175,7 +175,7 @@ Check if `production/review-mode.txt` already exists.
 
 **If it exists**: Read it and show the current mode — "Review mode is set to `[current]`." — then proceed to Phase 4. Do not ask again.
 
-**If it does not exist**: Use a direct user question:
+**If it does not exist**: Use a direct user prompt:
 
 - **Prompt**: "One setup choice: how much design review would you want as you work through the workflow?"
 - **Options**:
@@ -196,7 +196,7 @@ Create the `production/` directory if it does not exist.
 
 ## Phase 4: Confirm Before Proceeding
 
-After presenting the recommended path, use a direct user question to ask the user which step they'd like to take first. Never auto-run the next skill.
+After presenting the recommended path, use a direct user prompt to ask the user which step they'd like to take first. Never auto-run the next skill.
 
 - **Prompt**: "Would you like to start with [recommended first step]?"
 - **Options**:

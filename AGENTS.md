@@ -12,7 +12,7 @@ This repository now carries a Codex port alongside the original Claude-oriented 
 - The user keeps decision authority at all times.
 - Present options and tradeoffs before making cross-domain or architecture-level changes.
 - Use stage-gated approval rather than asking before every single write.
-- If a source workflow refers to `AskUserQuestion`, ask the user directly in concise prose.
+- Interactive decision points use direct conversational prompts instead of source-runtime widgets.
 
 ## Multi-Agent Rules
 - Use Codex multi-agent tools for bounded sidecar work or independent review streams.
@@ -23,6 +23,8 @@ This repository now carries a Codex port alongside the original Claude-oriented 
 ## Path Ownership
 - `.codex/agents/**`: Codex role configs and prompt ports.
 - `.codex/skills/**`: Codex skill ports that preserve source names.
+- `.codex/docs/**`: Codex-facing supporting docs mirrored from the source baseline.
+- `.codex/hooks.json` and `.codex/hooks/**`: Codex lifecycle hooks and hook scripts.
 - `docs/codex-port/**`: parity tracking, active context, gap register, and port execution docs.
 - `.claude/**`: preserved source reference; avoid editing unless the user explicitly asks for source-side changes.
 
@@ -33,6 +35,7 @@ This repository now carries a Codex port alongside the original Claude-oriented 
 - Update `docs/codex-port/06-active-context.md` whenever the active wave or next steps change materially.
 
 ## Current Parity Strategy
-- Hooks are documented but not treated as runtime-critical parity because Codex hooks remain experimental.
-- Source references under `.claude/docs/**` remain valid during the first Codex port.
+- Repo-local Codex hooks are enabled for the hook events current Codex supports.
+- Codex-facing prompts and skills resolve supporting references from `.codex/docs/**`.
+- Unsupported Claude-only hook events are treated as documented runtime differences, not as active gaps.
 - Generated Codex assets should stay reproducible from `tools/codex_port/bootstrap_codex_port.py`.

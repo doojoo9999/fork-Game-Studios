@@ -3,14 +3,14 @@ name: architecture-decision
 description: "Creates an Architecture Decision Record (ADR) documenting a significant technical decision, its context, alternatives considered, and consequences. Every major technical choice should have an ADR."
 argument-hint: "[title] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # architecture-decision
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/architecture-decision/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 When this skill is invoked:
 
@@ -21,7 +21,7 @@ Resolve the review mode (once, store for all gate spawns this run):
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `.claude/docs/director-gates.md` for the full check pattern.
+See `.codex/docs/director-gates.md` for the full check pattern.
 
 **If the argument starts with `retrofit` followed by a file path**
 (e.g., `/architecture-decision retrofit docs/architecture/adr-0001-event-system.md`):
@@ -175,7 +175,7 @@ or explicitly accepted as an intentional exception.
 
 Before asking anything, derive the skill's best guesses from the context already
 gathered (GDDs read, engine reference loaded, existing ADRs scanned). Then present
-a **confirm/adjust** prompt using a direct user question — not open-ended questions.
+a **confirm/adjust** prompt using a direct user prompt — not open-ended questions.
 
 **Derive assumptions first:**
 - **Problem**: Infer from the title + GDD context what decision needs to be made
@@ -184,11 +184,11 @@ a **confirm/adjust** prompt using a direct user question — not open-ended ques
 - **GDD linkage**: Extract which GDD systems the title directly relates to
 - **Status**: Always `Proposed` for new ADRs — never ask the user what the status is
 
-**Scope of assumptions tab**: Assumptions cover only: problem framing, alternative approaches, upstream dependencies, GDD linkage, and status. Schema design questions (e.g., "How should spawn timing work?", "Should data be inline or external?") are NOT assumptions — they are design decisions belonging to a separate step after the assumptions are confirmed. Do not include schema design questions in the assumptions a direct user question widget.
+**Scope of assumptions tab**: Assumptions cover only: problem framing, alternative approaches, upstream dependencies, GDD linkage, and status. Schema design questions (e.g., "How should spawn timing work?", "Should data be inline or external?") are NOT assumptions — they are design decisions belonging to a separate step after the assumptions are confirmed. Do not include schema design questions in the assumptions direct user prompt block.
 
-**After assumptions are confirmed**, if the ADR involves schema or data design choices, use a separate multi-tab a direct user question to ask each design question independently before drafting.
+**After assumptions are confirmed**, if the ADR involves schema or data design choices, use a separate multi-tab a direct user prompt to ask each design question independently before drafting.
 
-**Present assumptions with a direct user question:**
+**Present assumptions with a direct user prompt:**
 
 ```
 Here's what I'm assuming before drafting:
@@ -212,7 +212,7 @@ Status: Proposed
 Do not generate the ADR until the user confirms assumptions or provides corrections.
 
 **After engine specialist and TD reviews return** (Step 4.5/4.6), if unresolved
-decisions remain, present each one as a separate a direct user question with the proposed
+decisions remain, present each one as a separate a direct user prompt with the proposed
 options as choices plus a free-text escape:
 
 ```
@@ -340,8 +340,8 @@ to implement it.]
 - [Links to related design documents]
 ```
 
-4.5. **Engine Specialist Validation** — Before saving, spawn the **primary engine specialist** via Codex multi-agent tools to validate the drafted ADR:
-   - Read `.claude/docs/technical-preferences.md` `Engine Specialists` section to get the primary specialist
+4.5. **Engine Specialist Validation** — Before saving, spawn the **primary engine specialist** via `spawn_agent` to validate the drafted ADR:
+   - Read `.codex/docs/technical-preferences.md` `Engine Specialists` section to get the primary specialist
    - If no engine is configured (`[TO BE CONFIGURED]`), skip this step
    - Spawn `agent role: [primary specialist]` with: the ADR's Engine Compatibility section, Decision section, Key Interfaces, and the engine reference docs path. Ask them to:
      1. Confirm the proposed approach is idiomatic for the pinned engine version
@@ -355,7 +355,7 @@ to implement it.]
 - `lean` → skip (not a PHASE-GATE). Note: "TD-ADR skipped — Lean mode." Proceed to Step 4.7 (GDD sync check).
 - `full` → spawn as normal.
 
-4.6. **Technical Director Strategic Review** — After the engine specialist validation, spawn `technical-director` via Codex multi-agent tools using gate **TD-ADR** (`.claude/docs/director-gates.md`):
+4.6. **Technical Director Strategic Review** — After the engine specialist validation, spawn `technical-director` via `spawn_agent` using gate **TD-ADR** (`.codex/docs/director-gates.md`):
    - Pass: the ADR file path (or draft content), engine version, domain, any existing ADRs in the same domain
    - The TD validates architectural coherence (is this decision consistent with the whole system?) — distinct from the engine specialist's API-level check
    - If CONCERNS or REJECT: revise the Decision or Alternatives sections accordingly before proceeding
@@ -377,7 +377,7 @@ developers reading the GDD from implementing the wrong interface.
 
 If no inconsistencies: skip this block silently.
 
-5. **Write approval** — Use a direct user question:
+5. **Write approval** — Use a direct user prompt:
 
 If GDD sync issues were found:
 - "ADR draft is complete. How would you like to proceed?"
@@ -420,7 +420,7 @@ Registry candidates from this ADR:
 
 **BLOCKING — do not write to `docs/registry/architecture.yaml` without explicit user approval.**
 
-Ask using a direct user question:
+Ask using a direct user prompt:
 - "May I update `docs/registry/architecture.yaml` with these [N] new stances?"
   - Options: "Yes — update the registry", "Not yet — I want to review the candidates", "Skip registry update"
 
@@ -431,7 +431,7 @@ changing, set the old entry to `status: superseded_by: ADR-[NNNN]` and add the n
 
 ## 7. Closing Next Steps
 
-After the ADR is written (and registry optionally updated), close with a direct user question.
+After the ADR is written (and registry optionally updated), close with a direct user prompt.
 
 Before generating the widget:
 1. Read `docs/registry/architecture.yaml` — check if any priority ADRs are still unwritten (look for ADRs flagged in technical-preferences.md or systems-index.md as prerequisites)

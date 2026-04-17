@@ -3,15 +3,15 @@ name: review-all-gdds
 description: "Holistic cross-GDD consistency and game design review. Reads all system GDDs simultaneously and checks for contradictions between them, stale references, ownership conflicts, formula incompatibilities, and game design theory violations (dominant strategies, economic imbalance, cognitive overload, pillar drift). Run after all MVP GDDs are written, before architecture begins."
 argument-hint: "[focus: full | consistency | design-theory | since-last-review]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 model: opus
 ---
 # review-all-gdds
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/review-all-gdds/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Review All GDDs
 
@@ -107,7 +107,7 @@ If fewer than 2 system GDDs exist, stop:
 ### Parallel Execution
 
 Phase 2 (Consistency) and Phase 3 (Design Theory) are independent — they read
-the same GDD inputs but produce separate reports. Spawn both as parallel Task
+the same GDD inputs but produce separate reports. Spawn both as parallel worker-agent
 agents simultaneously rather than waiting for Phase 2 to complete before
 starting Phase 3. Collect both results before writing the combined report.
 
@@ -550,11 +550,11 @@ FAIL: One or more blocking issues must be resolved before architecture begins.
 
 ## Phase 6: Write Report and Flag GDDs
 
-Use a direct user question for write permission:
+Use a direct user prompt for write permission:
 - Prompt: "May I write this review to `design/gdd/gdd-cross-review-[date].md`?"
 - Options: `[A] Yes — write the report` / `[B] No — skip`
 
-If any GDDs are flagged for revision, use a second a direct user question:
+If any GDDs are flagged for revision, use a second a direct user prompt:
 - Prompt: "Should I update the systems index to mark these GDDs as needing revision? ([list of flagged GDDs])"
 - Options: `[A] Yes — update systems index` / `[B] No — leave as-is`
 - If yes: update each flagged GDD's Status field in systems-index.md to "Needs Revision".
@@ -581,7 +581,7 @@ Confirm in conversation: "Session state updated."
 
 ## Phase 7: Handoff
 
-After all file writes are complete, use a direct user question for a closing widget.
+After all file writes are complete, use a direct user prompt for a closing widget.
 
 Before building options, check project state:
 - Are there any Warning-level items that are simple edits (flagged with "30-second edit", "brief addition", or similar)? → offer inline quick-fix option
@@ -611,7 +611,7 @@ If any spawned agent returns BLOCKED, errors, or fails to complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" before continuing
 2. **Assess dependencies**: If the blocked agent's output is required by a later phase, do not proceed past that phase without user input
-3. **Offer options** via a direct user question with three choices:
+3. **Offer options** by asking the user directly with three choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope (fewer GDDs, single-system focus)
    - Stop here and resolve the blocker first

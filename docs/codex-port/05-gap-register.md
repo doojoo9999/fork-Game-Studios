@@ -2,7 +2,7 @@
 
 | Gap | State | Details |
 | --- | --- | --- |
-| interaction-tools | open | Source skills mention `AskUserQuestion`; Codex requires direct user prompts instead. |
-| task-tool | open | Source team skills mention Claude `Task`; Codex port keeps this as a documented translation to `spawn_agent` / `wait_agent`. |
-| supporting-doc-paths | open | Codex skills currently reference `.claude/docs/**` as the preserved source baseline rather than `.codex/docs/**` mirrors. |
-| hooks-parity | open | Claude hook behavior is documented but not enforced through Codex runtime hooks in v1. |
+| interaction-tools | resolved | Generated Codex prompts and skills replace `AskUserQuestion` references with direct user prompts and plain conversational gating. |
+| task-tool | resolved | Generated Codex prompts and skills replace Claude `Task` references with Codex multi-agent guidance centered on `spawn_agent`, `send_input`, `wait_agent`, and `close_agent`. |
+| supporting-doc-paths | resolved | The port now generates `.codex/docs/**` mirrors from `.claude/docs/**` and rewrites Codex-facing references to the mirrored paths. |
+| hooks-parity | translated | Repo-local Codex hooks are enabled for supported events (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop`); unsupported Claude-only hook events remain documented as intentional runtime differences rather than open gaps. |

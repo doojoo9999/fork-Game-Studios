@@ -3,14 +3,14 @@ name: story-done
 description: "End-of-story completion review. Reads the story file, verifies each acceptance criterion against the implementation, checks for GDD/ADR deviations, prompts code review, updates story status to Complete, and surfaces the next ready story from the sprint."
 argument-hint: "[story-file-path] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # story-done
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/story-done/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Story Done
 
@@ -31,7 +31,7 @@ Resolve the review mode (once, store for all gate spawns this run):
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `.claude/docs/director-gates.md` for the full check pattern.
+See `.codex/docs/director-gates.md` for the full check pattern.
 
 **If a file path is provided** (e.g., `/story-done production/epics/core/story-damage-calculator.md`):
 read that file directly.
@@ -41,7 +41,7 @@ read that file directly.
 1. Check `production/session-state/active.md` for the currently active story.
 2. If not found there, read the most recent file in `production/sprints/` and
    look for stories marked IN PROGRESS.
-3. If multiple in-progress stories are found, use a direct user question:
+3. If multiple in-progress stories are found, use a direct user prompt:
    - "Which story are we completing?"
    - Options: list the in-progress story file names.
 4. If no story can be found, ask the user to provide the path.
@@ -91,13 +91,13 @@ three methods:
   that should be in localization files.
 - **Dependency check**: if a criterion says "depends on X", check that X exists.
 
-### Manual verification with confirmation (use a direct user question)
+### Manual verification with confirmation (use a direct user prompt)
 
 - Criteria about subjective qualities ("feels responsive", "animations play correctly")
 - Criteria about gameplay behaviour ("player takes damage when...", "enemy responds to...")
 - Performance criteria ("completes within Xms") — ask if profiled or accept as assumed
 
-Batch up to 4 manual verification questions into a single a direct user question call:
+Batch up to 4 manual verification questions into a single a direct user prompt call:
 
 ```
 question: "Does [criterion]?"
@@ -121,7 +121,7 @@ For each acceptance criterion in the story:
    - **Unit test**: check `tests/unit/` for a test file or function name that
      matches the criterion's subject (use `Glob` and `Grep`)
    - **Integration test**: check `tests/integration/` similarly
-   - **Manual confirmation**: if the criterion was verified via a direct user question
+   - **Manual confirmation**: if the criterion was verified via a direct user prompt
      above with a "Yes — passes" answer, count that as a manual test
 
 2. Produce a traceability table:
@@ -238,7 +238,7 @@ For each deviation found, categorize:
 - `lean` → skip (not a PHASE-GATE). Note: "QL-TEST-COVERAGE skipped — Lean mode." Proceed to Phase 5.
 - `full` → spawn as normal.
 
-After completing the deviation checks in Phase 4, spawn `qa-lead` via Codex multi-agent tools using gate **QL-TEST-COVERAGE** (`.claude/docs/director-gates.md`).
+After completing the deviation checks in Phase 4, spawn `qa-lead` via `spawn_agent` using gate **QL-TEST-COVERAGE** (`.codex/docs/director-gates.md`).
 
 Pass:
 - The story file path and story type
@@ -264,11 +264,11 @@ Skip this phase for Config/Data stories (no code tests required).
 - `lean` → skip (not a PHASE-GATE). Note: "LP-CODE-REVIEW skipped — Lean mode." Proceed to Phase 6 (completion report).
 - `full` → spawn as normal.
 
-Spawn `lead-programmer` via Codex multi-agent tools using gate **LP-CODE-REVIEW** (`.claude/docs/director-gates.md`).
+Spawn `lead-programmer` via `spawn_agent` using gate **LP-CODE-REVIEW** (`.codex/docs/director-gates.md`).
 
 Pass: implementation file paths, story file path, relevant GDD section, governing ADR.
 
-Present the verdict to the user. If CONCERNS, surface them via a direct user question:
+Present the verdict to the user. If CONCERNS, surface them via a direct user prompt:
 - Options: `Revise flagged issues` / `Accept and proceed` / `Discuss further`
 If REJECT, do not proceed to Phase 6 verdict until the issues are resolved.
 
@@ -422,7 +422,7 @@ If no more stories are ready but Must Have stories are still In Progress (not Co
   decides if they are acceptable.
 - **BLOCKED verdict is advisory** — the user can override and mark complete
   anyway; document the risk explicitly if they do.
-- Use a direct user question for the code review prompt and for batching manual
+- Use a direct user prompt for the code review prompt and for batching manual
   criteria confirmations.
 
 ---

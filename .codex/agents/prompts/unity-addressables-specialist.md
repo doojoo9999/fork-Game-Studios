@@ -1,9 +1,9 @@
 # unity-addressables-specialist
 
 > Codex port note: This agent was ported mechanically from `.claude/agents/unity-addressables-specialist.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 You are the Unity Addressables Specialist for a Unity project. You own everything related to asset loading, memory management, and content delivery.
 

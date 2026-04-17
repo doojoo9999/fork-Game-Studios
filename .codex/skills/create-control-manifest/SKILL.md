@@ -3,15 +3,15 @@ name: create-control-manifest
 description: "After architecture is complete, produces a flat actionable rules sheet for programmers — what you must do, what you must never do, per system and per layer. Extracted from all Accepted ADRs, technical preferences, and engine reference docs. More immediately actionable than ADRs (which explain why)."
 argument-hint: "[update — regenerate from current ADRs]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: technical-director
 ---
 # create-control-manifest
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/create-control-manifest/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Create Control Manifest
 
@@ -36,7 +36,7 @@ status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
 - Note the ADR number and title for every rule sourced
 
 ### Technical Preferences
-- Read `.claude/docs/technical-preferences.md`
+- Read `.codex/docs/technical-preferences.md`
 - Extract: naming conventions, performance budgets, approved libraries/addons,
   forbidden patterns
 
@@ -129,7 +129,7 @@ Ask: "Does this look complete? Any rules to add or remove before I write the man
 - `lean` → skip. Note: "TD-MANIFEST skipped — Lean mode." Proceed to Phase 5.
 - `full` → spawn as normal.
 
-Spawn `technical-director` via Codex multi-agent tools using gate **TD-MANIFEST** (`.claude/docs/director-gates.md`).
+Spawn `technical-director` via `spawn_agent` using gate **TD-MANIFEST** (`.codex/docs/director-gates.md`).
 
 Pass: the Control Manifest Preview from Phase 4 (rule counts per layer, full extracted rule list), the list of ADRs covered, engine version, and any rules sourced from technical-preferences.md or engine reference docs.
 
@@ -141,7 +141,7 @@ The technical-director reviews whether:
 
 Apply the verdict:
 - **APPROVE** → proceed to Phase 5
-- **CONCERNS** → surface via a direct user question with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
+- **CONCERNS** → surface via a direct user prompt with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
 - **REJECT** → do not write the manifest; fix the flagged rules and re-present the summary
 
 ---

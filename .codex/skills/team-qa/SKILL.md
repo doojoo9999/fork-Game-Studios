@@ -3,19 +3,19 @@ name: team-qa
 description: "Orchestrate the QA team through a full testing cycle. Coordinates qa-lead (strategy + test plan) and qa-tester (test case writing + bug reporting) to produce a complete QA package for a sprint or feature. Covers: test plan generation, test case writing, smoke check gate, manual QA execution, and sign-off report."
 argument-hint: "[sprint | feature: system-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: qa-lead
 ---
 # team-qa
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/team-qa/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 When this skill is invoked, orchestrate the QA team through a structured testing cycle.
 
-**Decision Points:** At each phase transition, use a direct user question to present
+**Decision Points:** At each phase transition, use a direct user prompt to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
@@ -51,7 +51,7 @@ Before doing anything else, gather the full scope:
 
 ### Phase 2: QA Strategy (qa-lead)
 
-Spawn `qa-lead` via Codex multi-agent tools to review all in-scope stories and produce a QA strategy.
+Spawn `qa-lead` via `spawn_agent` to review all in-scope stories and produce a QA strategy.
 
 Prompt the qa-lead to:
 - Read each story file
@@ -69,7 +69,7 @@ Prompt the qa-lead to:
 
 If the smoke check result is **FAIL**, the qa-lead must list the failures prominently. QA cannot proceed past the strategy phase with a failed smoke check.
 
-Present the qa-lead's full strategy to the user, then use a direct user question:
+Present the qa-lead's full strategy to the user, then use a direct user prompt:
 
 ```
 question: "QA Strategy Review"
@@ -108,7 +108,7 @@ Write only after receiving approval.
 
 For each story requiring manual QA (Visual/Feel, UI, Integration without automated tests):
 
-Spawn `qa-tester` via Codex multi-agent tools for each story (run in parallel where possible), providing:
+Spawn `qa-tester` via `spawn_agent` for each story (run in parallel where possible), providing:
 - The story file path
 - The relevant section of the QA plan for that story
 - The GDD acceptance criteria for the system being tested (if available)
@@ -123,7 +123,7 @@ Each test case set should include:
 
 Present the test cases to the user for review before execution. Group by story.
 
-Use a direct user question per story group (batched 3-4 at a time):
+Use a direct user prompt per story group (batched 3-4 at a time):
 
 ```
 question: "Test cases ready for [Story Group]. Review before manual QA begins?"
@@ -137,7 +137,7 @@ options:
 
 Walk through each story in the approved manual QA list.
 
-Batch stories into groups of 3-4 and use a direct user question for each:
+Batch stories into groups of 3-4 and use a direct user prompt for each:
 
 ```
 question: "Manual QA — [Story Title]\n[brief description of what to test]"
@@ -148,7 +148,7 @@ options:
   - "BLOCKED — cannot test yet (reason)"
 ```
 
-After each FAIL result: use a direct user question to collect the failure description, then spawn `qa-tester` via Codex multi-agent tools to write a formal bug report in `production/qa/bugs/`.
+After each FAIL result: use a direct user prompt to collect the failure description, then spawn `qa-tester` via `spawn_agent` to write a formal bug report in `production/qa/bugs/`.
 
 Bug report naming: `BUG-[NNN]-[short-slug].md` (increment NNN from existing bugs in the directory).
 
@@ -160,7 +160,7 @@ After collecting all results, summarize:
 
 ### Phase 7: QA Sign-Off Report
 
-Spawn `qa-lead` via Codex multi-agent tools to produce the sign-off report using all results from Phases 4–6.
+Spawn `qa-lead` via `spawn_agent` to produce the sign-off report using all results from Phases 4–6.
 
 The sign-off report format:
 
@@ -204,11 +204,11 @@ Write only after receiving approval.
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Codex multi-agent tools) returns BLOCKED, errors, or cannot complete:
+If any spawned agent (via `spawn_agent`) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via a direct user question with choices:
+3. **Offer options** by asking the user directly with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first

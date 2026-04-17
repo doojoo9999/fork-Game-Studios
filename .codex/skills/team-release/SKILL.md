@@ -3,23 +3,23 @@ name: team-release
 description: "Orchestrate the release team: coordinates release-manager, qa-lead, devops-engineer, and producer to execute a release from candidate to deployment."
 argument-hint: "[version number or 'next']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # team-release
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/team-release/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 **Argument check:** If no version number is provided:
 1. Read `production/session-state/active.md` and the most recent file in `production/milestones/` (if they exist) to infer the target version.
-2. If a version is found: report "No version argument provided — inferred [version] from milestone data. Proceeding." Then confirm with a direct user question: "Releasing [version]. Is this correct?"
-3. If no version is discoverable: use a direct user question to ask "What version number should be released? (e.g., v1.0.0)" and wait for user input before proceeding. Do NOT default to a hardcoded version string.
+2. If a version is found: report "No version argument provided — inferred [version] from milestone data. Proceeding." Then confirm with a direct user prompt: "Releasing [version]. Is this correct?"
+3. If no version is discoverable: use a direct user prompt to ask "What version number should be released? (e.g., v1.0.0)" and wait for user input before proceeding. Do NOT default to a hardcoded version string.
 
 When this skill is invoked, orchestrate the release team through a structured pipeline.
 
-**Decision Points:** At each phase transition, use a direct user question to present
+**Decision Points:** At each phase transition, use a direct user prompt to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
@@ -87,7 +87,7 @@ Delegate to **producer**:
 
 **If producer declares NO-GO:**
 - Surface the decision immediately: "PRODUCER: NO-GO — [rationale, e.g., S1 bug found in Phase 3]."
-- Use a direct user question with options:
+- Use a direct user prompt with options:
   - Fix the blocker and re-run the affected phase
   - Defer the release to a later date
   - Override NO-GO with documented rationale (user must provide written justification)
@@ -119,11 +119,11 @@ Delegate to **community-manager** (in parallel with deployment):
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Codex multi-agent tools) returns BLOCKED, errors, or cannot complete:
+If any spawned agent (via `spawn_agent`) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via a direct user question with choices:
+3. **Offer options** by asking the user directly with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first

@@ -3,25 +3,25 @@ name: code-review
 description: "Performs an architectural and quality code review on a specified file or set of files. Checks for coding standard compliance, architectural pattern adherence, SOLID principles, testability, and performance concerns."
 argument-hint: "[path-to-file-or-directory]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 agent: lead-programmer
 ---
 # code-review
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/code-review/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 1: Load Target Files
 
-Read the target file(s) in full. Read CLAUDE.md for project coding standards.
+Read the target file(s) in full. Read AGENTS.md for project coding standards.
 
 ---
 
 ## Phase 2: Identify Engine Specialists
 
-Read `.claude/docs/technical-preferences.md`, section `## Engine Specialists`. Note:
+Read `.codex/docs/technical-preferences.md`, section `## Engine Specialists`. Note:
 
 - The **Primary** specialist (used for architecture and broad engine concerns)
 - The **Language/Code Specialist** (used when reviewing the project's primary language files)
@@ -89,7 +89,7 @@ Identify the system category (engine, gameplay, AI, networking, UI, tools) and e
 
 ## Phase 7: Specialist Reviews (Parallel)
 
-Spawn all applicable specialists simultaneously via Codex multi-agent tools — do not wait for one before starting the next.
+Spawn all applicable specialists simultaneously via `spawn_agent` — do not wait for one before starting the next.
 
 ### Engine Specialists
 
@@ -104,7 +104,7 @@ Also spawn the **Primary Specialist** for any file touching engine architecture 
 
 ### QA Testability Review
 
-For Logic and Integration stories, also spawn `qa-tester` via Codex multi-agent tools in parallel with the engine specialists. Pass:
+For Logic and Integration stories, also spawn `qa-tester` via `spawn_agent` in parallel with the engine specialists. Pass:
 - The implementation files being reviewed
 - The story's `## QA Test Cases` section (the pre-written test specs from qa-lead)
 - The story's `## Acceptance Criteria`

@@ -3,16 +3,16 @@ name: sprint-plan
 description: "Generates a new sprint plan or updates an existing one based on the current milestone, completed work, and available capacity. Pulls context from production documents and design backlogs."
 argument-hint: "[new|update|status] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 context: |
   !ls production/sprints/ 2>/dev/null
 ---
 # sprint-plan
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/sprint-plan/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 ## Phase 0: Parse Arguments
 
@@ -21,7 +21,7 @@ Extract the mode argument (`new`, `update`, or `status`) and resolve the review 
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `.claude/docs/director-gates.md` for the full check pattern.
+See `.codex/docs/director-gates.md` for the full check pattern.
 
 ---
 
@@ -178,7 +178,7 @@ stories that haven't changed, add new stories, remove dropped ones.
 - `lean` → skip (not a PHASE-GATE). Note: "PR-SPRINT skipped — Lean mode." Proceed to Phase 5 (QA plan gate).
 - `full` → spawn as normal.
 
-Before finalising the sprint plan, spawn `producer` via Codex multi-agent tools using gate **PR-SPRINT** (`.claude/docs/director-gates.md`).
+Before finalising the sprint plan, spawn `producer` via `spawn_agent` using gate **PR-SPRINT** (`.codex/docs/director-gates.md`).
 
 Pass: proposed story list (titles, estimates, dependencies), total team capacity in hours/days, any carryover from the previous sprint, milestone constraints and deadline.
 
@@ -206,7 +206,7 @@ Use `Glob` to look for `production/qa/qa-plan-sprint-[N].md` or any file in `pro
 >
 > Run `/qa-plan sprint` now, before starting any implementation. It takes one session and produces the test case requirements each story needs."
 
-Use a direct user question:
+Use a direct user prompt:
 - Prompt: "No QA plan found for this sprint. How do you want to proceed?"
 - Options:
   - `[A] Run /qa-plan sprint now — I'll do that before starting implementation (Recommended)`

@@ -3,14 +3,14 @@ name: test-helpers
 description: "Generate engine-specific test helper libraries for the project's test suite. Reads existing test patterns and produces tests/helpers/ with assertion utilities, factory functions, and mock objects tailored to the project's systems. Reduces boilerplate in new test files."
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # test-helpers
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/test-helpers/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Test Helpers
 
@@ -42,7 +42,7 @@ and systems — so every developer writes less boilerplate and more assertions.
 
 ## 2. Detect Engine and Language
 
-Read `.claude/docs/technical-preferences.md` and extract:
+Read `.codex/docs/technical-preferences.md` and extract:
 - `Engine:` value
 - `Language:` value
 - `Framework:` from the Testing section

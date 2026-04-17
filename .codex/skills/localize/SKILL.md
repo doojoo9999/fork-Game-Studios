@@ -4,14 +4,14 @@ description: "Full localization pipeline: scan for hardcoded strings, extract an
 argument-hint: "[scan|extract|validate|status|brief|cultural-review|vo-pipeline|rtl-check|freeze|qa]"
 user-invocable: true
 agent: localization-lead
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, update_plan
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, spawn_agent, send_input, wait_agent, close_agent, update_plan
 ---
 # localize
 
 > Codex port note: This skill was ported mechanically from `.claude/skills/localize/SKILL.md`.
-> When the source mentions `AskUserQuestion`, ask the user directly in concise prose.
-> When the source mentions the `Task` tool, use Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`) when delegation is appropriate.
-> References to `.claude/docs/**` remain valid during the parity port unless a `.codex` replacement is explicitly introduced.
+> Interactive decision points use plain conversational prompts.
+> Delegation uses Codex multi-agent tools (`spawn_agent`, `send_input`, `wait_agent`, `close_agent`).
+> Supporting references resolve from `.codex/docs/**`.
 
 # Localization Pipeline
 
@@ -185,7 +185,7 @@ Ask: "May I write this translator brief to `production/localization/translator-b
 
 ## Phase 2F: Cultural Review Mode
 
-Spawn `localization-lead` via Codex multi-agent tools. Ask them to audit the following for cultural sensitivity across the target locales (read from `assets/data/strings/` and `assets/`):
+Spawn `localization-lead` via `spawn_agent`. Ask them to audit the following for cultural sensitivity across the target locales (read from `assets/data/strings/` and `assets/`):
 
 ### Content Areas to Review
 
@@ -282,7 +282,7 @@ Grep `src/` for VO audio references. Verify each referenced path exists in `asse
 Right-to-left languages (Arabic, Hebrew, Persian, Urdu) require layout mirroring beyond
 just translating text. This mode validates the implementation.
 
-Read `.claude/docs/technical-preferences.md` to determine the engine. Then check:
+Read `.codex/docs/technical-preferences.md` to determine the engine. Then check:
 
 **Layout mirroring**
 - Is RTL layout enabled in the engine? (Godot: `Control.layout_direction`, Unity: `RTL Support` package, Unreal: text direction flags)
@@ -337,7 +337,7 @@ Pre-Freeze Checklist
 [ ] Marketing strings (store description, achievements) are final
 ```
 
-Use a direct user question:
+Use a direct user prompt:
 - Prompt: "Are all items above confirmed? Calling string freeze locks the source table."
 - Options: `[A] Yes — call string freeze now` / `[B] No — I still have strings to add`
 
@@ -372,7 +372,7 @@ Localization QA is a dedicated pass that runs after translations are delivered b
 before any locale ships. This is not the same as `/validate` (which checks completeness)
 — this is a structured playthrough-based quality check.
 
-Spawn `localization-lead` via Codex multi-agent tools with:
+Spawn `localization-lead` via `spawn_agent` with:
 - The target locale(s) to QA
 - The list of all screens/flows in the game (from `design/gdd/` or `/content-audit` output)
 - The current `/localize validate` report
