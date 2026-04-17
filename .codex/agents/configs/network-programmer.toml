@@ -1,0 +1,4 @@
+model = "gpt-5.2-codex"
+model_reasoning_effort = "high"
+personality = "pragmatic"
+model_instructions_file = "../prompts/network-programmer.md"
